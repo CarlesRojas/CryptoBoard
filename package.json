@@ -5,6 +5,7 @@
     "private": true,
     "dependencies": {
         "@openzeppelin/contracts": "^4.1.0",
+        "browserslist": "^4.16.6",
         "chai": "^4.3.4",
         "chai-as-promised": "^7.1.1",
         "chai-bignumber": "^3.0.0",
