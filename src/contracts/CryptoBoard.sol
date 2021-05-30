@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract CryptoBoard is ERC721 {
-
     // ##################################################################
     //    GLOBAR VARS
     // ##################################################################
@@ -50,6 +49,15 @@ contract CryptoBoard is ERC721 {
         pixels[_coord] = Pixel(_coord, _color, payable(msg.sender), true);
     }
 
+    // Mint a batch number of coordinates
+    function mintBatch(uint256 amount) public onlyBy(owner) {
+        uint256 currPixelCount = pixelCount;
+
+        // Mint the coordinates
+        for (uint256 i = currPixelCount; i < currPixelCount + amount; i++)
+            mint(i, "#FFFFFF");
+    }
+
     // Change the color of a pixel
     function changeColor(uint256 _coord, string memory _color) public {
         // Do not change color if it does not exists
@@ -74,9 +82,13 @@ contract CryptoBoard is ERC721 {
         pixels[_coord] = _pixel;
 
         // Emit event
-        emit PixelColorChanged(_pixel.coords, _pixel.color, _pixel.author, _pixel.exists);
+        emit PixelColorChanged(
+            _pixel.coords,
+            _pixel.color,
+            _pixel.author,
+            _pixel.exists
+        );
     }
-
 
     // ##################################################################
     //    MODIFIERS
@@ -93,8 +105,13 @@ contract CryptoBoard is ERC721 {
     // ##################################################################
 
     // Returns true if the strings are equal
-    function stringsAreEqual(string memory s1, string memory s2) public pure returns(bool){
-        return keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
+    function stringsAreEqual(string memory s1, string memory s2)
+        public
+        pure
+        returns (bool)
+    {
+        return
+            keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
     }
 
     // Returns true if the string is a valid HEX color code
@@ -124,11 +141,31 @@ contract CryptoBoard is ERC721 {
     }
 
     // ##################################################################
+    //    ADD TOKEN URI
+    // ##################################################################
+
+    // Base URI
+    string private baseURI;
+
+    // Set a new base uri
+    function setBaseURI(string memory baseURI_) public onlyBy(owner) {
+        // Check that the color is different than the old one
+        require(!stringsAreEqual(baseURI, baseURI_));
+
+        baseURI = baseURI_;
+    }
+
+    // Returns the correct base uri
+    function _baseURI() internal view virtual override returns (string memory) {
+        return baseURI;
+    }
+
+    // ##################################################################
     //    EVENTS
     // ##################################################################
 
     // Emited when the color of a pixel changes
-    event PixelColorChanged (
+    event PixelColorChanged(
         uint256 coords,
         string color,
         address payable author,

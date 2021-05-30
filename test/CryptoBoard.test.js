@@ -48,15 +48,31 @@ contract("CryptoBoard", ([deployer, buyer]) => {
             await contract.mint(1, "#E20583", { from: buyer }).should.be.rejected;
         });
 
-        it("lists pixels", async () => {
+        it("mint a batch of pixels", async () => {
+            await contract.mintBatch(10);
             const pixelCount = await contract.pixelCount();
-            const pixel = await contract.pixels(pixelCount.toNumber() - 1);
 
             // SUCCESS
-            assert.equal(pixel.coords.toNumber(), pixelCount.toNumber() - 1, "coords are correct");
-            assert.equal(pixel.color, "#000000", "color is correct");
-            assert.equal(pixel.author, deployer, "author is correct");
-            assert.equal(pixel.exists, true, "exists is correct");
+            assert.equal(pixelCount, 11, "to is correct");
+
+            // FAILURE
+            await contract.mintBatch(10, { from: buyer }).should.be.rejected;
+        });
+
+        it("lists pixels", async () => {
+            const pixelCount = await contract.pixelCount();
+            const firstPixel = await contract.pixels(0);
+            const lastPixel = await contract.pixels(pixelCount - 1);
+
+            // SUCCESS
+            assert.equal(firstPixel.coords.toNumber(), 0, "first pixel coords are correct");
+            assert.equal(firstPixel.color, "#000000", "first pixel color is correct");
+            assert.equal(firstPixel.author, deployer, "first pixel author is correct");
+            assert.equal(firstPixel.exists, true, "first pixel exists is correct");
+            assert.equal(lastPixel.coords.toNumber(), 10, "last pixel coords are correct");
+            assert.equal(lastPixel.color, "#FFFFFF", "last pixel color is correct");
+            assert.equal(lastPixel.author, deployer, "last pixel author is correct");
+            assert.equal(lastPixel.exists, true, "last pixel exists is correct");
         });
 
         it("allows owners to change the color of a pixel", async () => {
@@ -70,7 +86,7 @@ contract("CryptoBoard", ([deployer, buyer]) => {
             assert.equal(event.exists, true, "exists is correct");
 
             // FAILURE
-            await contract.changeColor(1, "#000000").should.be.rejected;
+            await contract.changeColor(11, "#000000").should.be.rejected;
             await contract.changeColor(0, "#000000", { from: buyer }).should.be.rejected;
             await contract.changeColor(0, "#GGGGGG").should.be.rejected;
             await contract.changeColor(0, "#FFFFFF").should.be.rejected;
@@ -104,6 +120,20 @@ contract("CryptoBoard", ([deployer, buyer]) => {
             assert(!(await contract.isColor("#35Aay4")));
             assert(!(await contract.isColor(".35Aa44")));
             assert(!(await contract.isColor("#3Aa44")));
+        });
+    });
+
+    describe("setting token URI", async () => {
+        it("sets token uri correctly", async () => {
+            await contract.setBaseURI("https://www.uriDomain1.com/");
+            await contract.setBaseURI("https://www.uriDomain2.com/");
+            const result = await contract.tokenURI(0);
+
+            // SUCCESS
+            assert.equal(result, "https://www.uriDomain2.com/0", "tokenURI is correct");
+
+            // FAILURE
+            await contract.setBaseURI("https://www.uriDomain2.com/").should.be.rejected;
         });
     });
 });
