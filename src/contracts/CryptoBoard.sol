@@ -8,6 +8,7 @@ contract CryptoBoard is ERC721 {
     //    GLOBAR VARS
     // ##################################################################
 
+    uint256 public numRows;
     uint256 public pixelCount;
     mapping(uint256 => Pixel) public pixels;
     address public owner = msg.sender;
@@ -29,7 +30,9 @@ contract CryptoBoard is ERC721 {
     // ##################################################################
 
     // Constructor fuunction
-    constructor() ERC721("Pixel", "PXL") {}
+    constructor() ERC721("Pixel", "PXL") {
+        numRows = 5;
+    }
 
     // Create a new pixel
     function mint(uint256 _coord, string memory _color) public onlyBy(owner) {

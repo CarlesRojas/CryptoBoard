@@ -1,14 +1,25 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useRef } from "react";
 
 // Data Context
 export const Data = createContext();
 
 const DataProvider = ({ children }) => {
-    // #################################################
-    //   EXAMPLE
-    // #################################################
+    // LOADING CHECK
+    const loadingDone = useRef(false);
 
-    const [testState, setTestState] = useState(false);
+    //   ERROR
+    const errorType = useRef("");
+
+    // ETHEREUM INFO
+    const account = useRef("");
+    const networkID = useRef("");
+    const networkInfo = useRef({});
+    const contract = useRef("");
+
+    // PIXELS INFO
+    const numRows = useRef(-1);
+    const pixelCount = useRef(-1);
+    const pixels = useRef([]);
 
     // #################################################
     //   PROVIDE DATA
@@ -17,9 +28,22 @@ const DataProvider = ({ children }) => {
     return (
         <Data.Provider
             value={{
-                // EXAMPLE
-                testState,
-                setTestState,
+                // LOADING CHECK
+                loadingDone,
+
+                // ERROR
+                errorType,
+
+                // ETHEREUM INFO
+                account,
+                networkID,
+                networkInfo,
+                contract,
+
+                // PIXELS INFO
+                numRows,
+                pixelCount,
+                pixels,
             }}
         >
             {children}
