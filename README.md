@@ -25,6 +25,9 @@
 `pixelCount = await contract.pixelCount()`
 `pixelCount.toNumber()`
 
+`pixelLimit = await contract.pixelLimit()`
+`pixelLimit.toNumber()`
+
 #### Mint
 
 await contract.mintBatch(25)

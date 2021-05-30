@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512">
+    <defs>
+        <linearGradient id="linear-gradient" x1="490.21" y1="42.79" x2="257.79" y2="275.21"
+            gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ff7878" />
+            <stop offset="1" stop-color="#ffb77b" />
+        </linearGradient>
+        <linearGradient id="linear-gradient-2" x1="21.79" y1="380.21" x2="214.21" y2="187.79"
+            gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#7bc0ff" />
+            <stop offset="1" stop-color="#88ffe0" />
+        </linearGradient>
+        <linearGradient id="linear-gradient-3" x1="410.21" y1="470.21" x2="257.79" y2="317.79"
+            gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#cb7bff" />
+            <stop offset="1" stop-color="#ff9cec" />
+        </linearGradient>
+    </defs>
+    <g>
+        <rect x="249" y="34" width="250" height="250" rx="30" style="fill:url(#linear-gradient)" />
+        <rect x="13" y="179" width="210" height="210" rx="30" style="fill:url(#linear-gradient-2)" />
+        <rect x="249" y="309" width="170" height="170" rx="30" style="fill:url(#linear-gradient-3)" />
+    </g>
+</svg>

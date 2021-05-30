@@ -8,7 +8,7 @@ import { API } from "contexts/API";
 export default function MainPage() {
     // Contexts
     const { loadingDone, numRows, pixelCount, pixels } = useContext(Data);
-    const { getPixelCount, getPixels, changePixelColor } = useContext(API);
+    const { changePixelColor } = useContext(API);
 
     console.log("render");
 
@@ -19,8 +19,8 @@ export default function MainPage() {
     // On componente mount
     useEffect(() => {
         const getPixelInfo = async () => {
-            // Load Web3
-            await getPixels();
+            console.log(pixels.current);
+            //await changePixelColor(11, "#FFFFFF");
 
             console.log(`Num rows: ${numRows.current}`);
             console.log(`Total pixels: ${pixelCount.current}`);

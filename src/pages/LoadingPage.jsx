@@ -7,7 +7,7 @@ import { Data } from "contexts/Data";
 
 export default function LoadingPage() {
     // Contexts
-    const { load } = useContext(API);
+    const { load, getPixels } = useContext(API);
     const { errorType, loadingDone } = useContext(Data);
 
     // #################################################
@@ -27,8 +27,12 @@ export default function LoadingPage() {
             loadingDone.current = true;
 
             // Change page
-            if (result === "success") setRedirectTo("/main");
-            else setRedirectTo("/error");
+            if (result === "success") {
+                // Load the pixels
+                await getPixels();
+
+                setRedirectTo("/main");
+            } else setRedirectTo("/error");
         };
         initialLoad();
 

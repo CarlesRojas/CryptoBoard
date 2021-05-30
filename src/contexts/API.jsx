@@ -72,7 +72,7 @@ const APIProvider = ({ children }) => {
         // Return if the contract has not been loaded
         if (!contract.current) return;
 
-        // If we do not have the number of rows, call it
+        // If we do not have the number of rows, get it
         if (numRows.current < 0) await getNumRows();
 
         // Return if we have already fetched it
@@ -91,7 +91,7 @@ const APIProvider = ({ children }) => {
         // Return if the contract has not been loaded
         if (!contract.current) return [];
 
-        // If we do not have the pixel count, call it
+        // If we do not have the pixel count, get it
         if (pixelCount.current < 0) await getPixelCount();
 
         try {
@@ -109,56 +109,24 @@ const APIProvider = ({ children }) => {
     };
 
     // Change color of a pixel
-    const changePixelColor = async (row, col, newColor) => {
+    const changePixelColor = async (coord, newColor) => {
         // Return if the contract has not been loaded
         if (!contract.current) return [];
 
+        // If we do not have the pixels get the
+        if (pixels.current.length <= 0) await getPixels();
+
         try {
             // Change pixel color
-            pixels.current = [];
-            for (let i = 0; i < pixelCount.current; i++) {
-                const currPixel = await contract.current.methods.pixels(i).call();
-                pixels.current = [...pixels.current, currPixel];
-            }
+            await contract.current.methods.changeColor(coord, newColor).send({ from: account.current });
 
-            return pixels.current;
+            // Update pixels
+            pixels.current[coord]["1"] = newColor;
+            pixels.current[coord]["color"] = newColor;
         } catch (error) {
             console.log(error);
         }
     };
-
-    // Example API
-    // const login = async (email, password) => {
-    //     // Post data
-    //     var postData = {
-    //         email,
-    //         password,
-    //     };
-
-    //     try {
-    //         // Fetch
-    //         var rawResponse = await fetch(`${apiURL}${apiVersion}/user/login`, {
-    //             method: "post",
-    //             headers: {
-    //                 Accept: "application/json, text/plain, */*",
-    //                 "Content-Type": "application/json",
-    //                 "Access-Control-Allow-Origin": "*",
-    //             },
-    //             body: JSON.stringify(postData),
-    //         });
-
-    //         // Get data from response
-    //         const response = await rawResponse.json();
-
-    //         // Return with error if it is the case
-    //         if ("error" in response) return response;
-
-    //         // Return response
-    //         return response;
-    //     } catch (error) {
-    //         return { error: "Login Error" };
-    //     }
-    // };
 
     // Return the context
     return (

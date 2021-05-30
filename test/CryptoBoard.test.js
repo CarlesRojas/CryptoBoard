@@ -49,14 +49,15 @@ contract("CryptoBoard", ([deployer, buyer]) => {
         });
 
         it("mint a batch of pixels", async () => {
-            await contract.mintBatch(10);
+            await contract.mintBatch(24);
             const pixelCount = await contract.pixelCount();
 
             // SUCCESS
-            assert.equal(pixelCount, 11, "to is correct");
+            assert.equal(pixelCount, 25, "to is correct");
 
             // FAILURE
             await contract.mintBatch(10, { from: buyer }).should.be.rejected;
+            await contract.mintBatch(1).should.be.rejected;
         });
 
         it("lists pixels", async () => {
@@ -69,7 +70,7 @@ contract("CryptoBoard", ([deployer, buyer]) => {
             assert.equal(firstPixel.color, "#000000", "first pixel color is correct");
             assert.equal(firstPixel.author, deployer, "first pixel author is correct");
             assert.equal(firstPixel.exists, true, "first pixel exists is correct");
-            assert.equal(lastPixel.coords.toNumber(), 10, "last pixel coords are correct");
+            assert.equal(lastPixel.coords.toNumber(), 24, "last pixel coords are correct");
             assert.equal(lastPixel.color, "#FFFFFF", "last pixel color is correct");
             assert.equal(lastPixel.author, deployer, "last pixel author is correct");
             assert.equal(lastPixel.exists, true, "last pixel exists is correct");
@@ -86,7 +87,7 @@ contract("CryptoBoard", ([deployer, buyer]) => {
             assert.equal(event.exists, true, "exists is correct");
 
             // FAILURE
-            await contract.changeColor(11, "#000000").should.be.rejected;
+            await contract.changeColor(25, "#000000").should.be.rejected;
             await contract.changeColor(0, "#000000", { from: buyer }).should.be.rejected;
             await contract.changeColor(0, "#GGGGGG").should.be.rejected;
             await contract.changeColor(0, "#FFFFFF").should.be.rejected;

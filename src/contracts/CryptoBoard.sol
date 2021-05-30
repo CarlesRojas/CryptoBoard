@@ -10,6 +10,7 @@ contract CryptoBoard is ERC721 {
 
     uint256 public numRows;
     uint256 public pixelCount;
+    uint256 public pixelLimit;
     mapping(uint256 => Pixel) public pixels;
     address public owner = msg.sender;
 
@@ -32,12 +33,16 @@ contract CryptoBoard is ERC721 {
     // Constructor fuunction
     constructor() ERC721("Pixel", "PXL") {
         numRows = 5;
+        pixelLimit = 25;
     }
 
     // Create a new pixel
     function mint(uint256 _coord, string memory _color) public onlyBy(owner) {
         // Do not create if coordinate already exists
         require(!pixels[_coord].exists);
+
+        // Do not create more pixels than the max limit
+        require(pixelCount < pixelLimit);
 
         // Only accept valid colors
         require(isColor(_color));

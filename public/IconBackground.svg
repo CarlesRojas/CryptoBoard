@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512">
+    <defs>
+        <linearGradient id="linear-gradient" y1="512" x2="512" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#111" />
+            <stop offset="1" stop-color="#191919" />
+        </linearGradient>
+        <linearGradient id="linear-gradient-2" x1="411.23" y1="114.86" x2="257.22" y2="268.87"
+            gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#ff7878" />
+            <stop offset="1" stop-color="#ffb77b" />
+        </linearGradient>
+        <linearGradient id="linear-gradient-3" x1="100.77" y1="338.48" x2="228.27" y2="210.98"
+            gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#7bc0ff" />
+            <stop offset="1" stop-color="#88ffe0" />
+        </linearGradient>
+        <linearGradient id="linear-gradient-4" x1="358.2" y1="398.14" x2="257.22" y2="297.16"
+            gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#cb7bff" />
+            <stop offset="1" stop-color="#ff9cec" />
+        </linearGradient>
+    </defs>
+    <g>
+        <rect id="Background" width="512" height="512" style="fill:url(#linear-gradient)" />
+        <rect x="251.36" y="109" width="165.73" height="165.73" rx="20" style="fill:url(#linear-gradient-2)" />
+        <rect x="94.91" y="205.12" width="139.21" height="139.21" rx="20" style="fill:url(#linear-gradient-3)" />
+        <rect x="251.36" y="291.3" width="112.7" height="112.7" rx="20" style="fill:url(#linear-gradient-4)" />
+
+    </g>
+</svg>
