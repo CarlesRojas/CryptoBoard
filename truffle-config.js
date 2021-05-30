@@ -1,6 +1,3 @@
-require("babel-register");
-require("babel-polyfill");
-
 module.exports = {
     networks: {
         development: {
@@ -16,6 +13,7 @@ module.exports = {
 
     compilers: {
         solc: {
+            version: "^0.8.0",
             optimizer: {
                 enabled: true,
                 runs: 200,
