@@ -3,25 +3,28 @@ import { Redirect } from "react-router-dom";
 
 // Contexts
 import { Data } from "contexts/Data";
+//import { API } from "contexts/API";
 
 // Components
-import ColorPicker from "components/ColorPicker";
 import CurrentPixel from "components/CurrentPixel";
+import Board from "components/Board";
 
 export default function MainPage() {
     // Contexts
-    const { loadingDone, numRows, pixelCount, pixels } = useContext(Data);
+    const { loadingDone, /*numRows, pixelCount, pixels,*/ account, color } = useContext(Data);
+    //const { changePixelColor } = useContext(API);
 
     // #################################################
     //   COMPONENT MOUNT
     // #################################################
 
-    // On componente mount
+    // On component mount
     useEffect(() => {
         const getPixelInfo = async () => {
-            console.log(`Num rows: ${numRows.current}`);
-            console.log(`Total pixels: ${pixelCount.current}`);
-            console.log(pixels.current);
+            //await changePixelColor("14", "#593838");
+            //console.log(`Num rows: ${numRows.current}`);
+            //console.log(`Total pixels: ${pixelCount.current}`);
+            //console.log(pixels.current);
         };
         getPixelInfo();
 
@@ -53,10 +56,12 @@ export default function MainPage() {
     return (
         <div className="mainPage">
             <div className="sidebar">
-                <CurrentPixel></CurrentPixel>
-                <ColorPicker></ColorPicker>
+                <CurrentPixel account={account} coords="24" color={color}></CurrentPixel>
             </div>
-            <div className="board"></div>
+
+            <div className="boardContainer">
+                <Board />
+            </div>
         </div>
     );
 }

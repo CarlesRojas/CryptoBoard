@@ -92,6 +92,7 @@ export default function ColorPicker() {
         const valid = checkHexColor(hexValue);
         if (valid) setValidColor(hexValue);
         else setHexIsValid(false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [hexValue]);
 
     // Update all when red input is updated and all the rgb are valid
@@ -99,6 +100,7 @@ export default function ColorPicker() {
         const valid = checkRGBColor(redValue);
         if (valid && greenIsValid && blueIsValid) setValidColor(rgbToHex(parseInt(redValue), parseInt(greenValue), parseInt(blueValue)));
         else setRedIsValid(false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [redValue]);
 
     // Update all when green input is updated and all the rgb are valid
@@ -106,6 +108,7 @@ export default function ColorPicker() {
         const valid = checkRGBColor(greenValue);
         if (redIsValid && valid && blueIsValid) setValidColor(rgbToHex(parseInt(redValue), parseInt(greenValue), parseInt(blueValue)));
         else setGreenIsValid(false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [greenValue]);
 
     // Update all when blue input is updated and all the rgb are valid
@@ -113,6 +116,7 @@ export default function ColorPicker() {
         const valid = checkRGBColor(blueValue);
         if (redIsValid && greenIsValid && valid) setValidColor(rgbToHex(parseInt(redValue), parseInt(greenValue), parseInt(blueValue)));
         else setBlueIsValid(false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [blueValue]);
 
     // #################################################

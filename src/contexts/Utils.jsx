@@ -242,8 +242,18 @@ const UtilsProvider = (props) => {
         return /*new Date().toISOString() + "_" +*/ id;
     }
 
+    // Copy string to clipboard
+    const copy = (str) => {
+        const el = document.createElement("textarea");
+        el.value = str;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand("copy");
+        document.body.removeChild(el);
+    };
+
     // Copy input to clipboard
-    var copy = function (elementId) {
+    var copyInput = function (elementId) {
         var input = document.getElementById(elementId);
         var isiOSDevice = navigator.userAgent.match(/ipad|iphone/i);
 
@@ -393,6 +403,22 @@ const UtilsProvider = (props) => {
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     };
 
+    function getMostContrastedColor(backgroundColor, lightColor, darkColor) {
+        var color = backgroundColor.charAt(0) === "#" ? backgroundColor.substring(1, 7) : backgroundColor;
+        var r = parseInt(color.substring(0, 2), 16); // hexToR
+        var g = parseInt(color.substring(2, 4), 16); // hexToG
+        var b = parseInt(color.substring(4, 6), 16); // hexToB
+        var uicolors = [r / 255, g / 255, b / 255];
+        var c = uicolors.map((col) => {
+            if (col <= 0.03928) {
+                return col / 12.92;
+            }
+            return Math.pow((col + 0.055) / 1.055, 2.4);
+        });
+        var L = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+        return L > 0.179 ? darkColor : lightColor;
+    }
+
     return (
         <Utils.Provider
             value={{
@@ -428,6 +454,7 @@ const UtilsProvider = (props) => {
                 // RANDOWM IDS
                 createUniqueID,
                 copy,
+                copyInput,
 
                 // VIBRATE
                 vibrate,
@@ -439,6 +466,7 @@ const UtilsProvider = (props) => {
                 // COLOR
                 hexToRgb,
                 rgbToHex,
+                getMostContrastedColor,
             }}
         >
             {props.children}

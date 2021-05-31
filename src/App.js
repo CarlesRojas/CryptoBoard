@@ -22,7 +22,7 @@ export default function App() {
     //   COMPONENT MOUNT
     // #################################################
 
-    // On componente mount
+    // On component mount
     useEffect(() => {
         // Dark mode
         const useDarkModeCookie = getCookie("cryptoplace_dark_mode");
@@ -33,7 +33,7 @@ export default function App() {
 
     return (
         <div className="app">
-            <Navbar></Navbar>
+            <Navbar />
 
             <Router>
                 <Switch>

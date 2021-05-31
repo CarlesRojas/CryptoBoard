@@ -188,8 +188,8 @@ video {
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
     margin: 0;
+    -webkit-appearance: none;
 }
 
 /* Firefox */
@@ -234,23 +234,24 @@ input[type="number"] {
 
 .mainPage {
     position: relative;
+    display: flex;
     height: calc(100% - #{$navBarHeightMobile});
     width: 100%;
-    display: flex;
 
     @media only screen and (min-width: $mobileWidth) {
         height: calc(100% - #{$navBarHeight});
     }
 
     .sidebar {
+        position: relative;
         height: 100%;
         width: 22rem;
     }
 
-    .board {
-        height: 100%;
+    .boardContainer {
+        position: relative;
         flex-grow: 1;
-        background-color: rgb(203, 255, 207);
+        height: 100%;
     }
 }
 
@@ -281,11 +282,11 @@ input[type="number"] {
 
 .navbar {
     position: relative;
-    height: $navBarHeightMobile;
-    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    height: $navBarHeightMobile;
+    width: 100%;
     z-index: 1000;
     @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
 
@@ -299,54 +300,54 @@ input[type="number"] {
 
     .logo {
         height: $navBarHeightMobile;
-        min-height: $navBarHeightMobile;
         max-height: $navBarHeightMobile;
+        min-height: $navBarHeightMobile;
         width: $navBarHeightMobile;
-        min-width: $navBarHeightMobile;
         max-width: $navBarHeightMobile;
-        padding: 0.5rem;
+        min-width: $navBarHeightMobile;
         margin-left: 0.5rem;
+        padding: 0.5rem;
 
         @media only screen and (min-width: $mobileWidth) {
             height: $navBarHeight;
-            min-height: $navBarHeight;
             max-height: $navBarHeight;
+            min-height: $navBarHeight;
             width: $navBarHeight;
-            min-width: $navBarHeight;
             max-width: $navBarHeight;
-            padding: 1.2rem;
+            min-width: $navBarHeight;
             margin-left: 1rem;
+            padding: 1.2rem;
         }
     }
 
     .name {
-        font-size: 1rem;
-        font-weight: 600;
-        margin: 0 1rem 0 0.5rem;
         flex-grow: 1;
         min-width: fit-content;
+        margin: 0 1rem 0 0.5rem;
+        font-size: 1rem;
+        font-weight: 600;
 
         @media only screen and (min-width: $mobileWidth) {
-            font-size: 1.5rem;
             margin: 0 2rem 0 1rem;
+            font-size: 1.5rem;
         }
     }
 
     .toggle {
         position: relative;
-        width: 3rem;
-        min-width: 3rem;
-        max-width: 3rem;
         height: 1.5rem;
+        width: 3rem;
+        max-width: 3rem;
+        min-width: 3rem;
         margin: 0.75rem;
         @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
         @include border-radius(100vw);
 
         @media only screen and (min-width: $mobileWidth) {
-            width: 4.6rem;
-            min-width: 4.6rem;
-            max-width: 4.6rem;
             height: 2.3rem;
+            width: 4.6rem;
+            max-width: 4.6rem;
+            min-width: 4.6rem;
             margin: 1.3rem;
         }
 
@@ -355,26 +356,26 @@ input[type="number"] {
         }
 
         .handle {
-            transition: left 0.2s ease-in-out;
-            position: absolute;
-            height: 1.5rem;
-            min-height: 1.5rem;
-            max-height: 1.5rem;
-            width: 1.5rem;
-            min-width: 1.5rem;
-            max-width: 1.5rem;
-            left: 0rem;
             pointer-events: none;
+            position: absolute;
+            transition: left 0.2s ease-in-out;
+            height: 1.5rem;
+            max-height: 1.5rem;
+            min-height: 1.5rem;
+            width: 1.5rem;
+            max-width: 1.5rem;
+            min-width: 1.5rem;
+            left: 0rem;
             @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
             @include border-radius(100vw);
 
             @media only screen and (min-width: $mobileWidth) {
                 height: 2.3rem;
-                min-height: 2.3rem;
                 max-height: 2.3rem;
+                min-height: 2.3rem;
                 width: 2.3rem;
-                min-width: 2.3rem;
                 max-width: 2.3rem;
+                min-width: 2.3rem;
                 left: 0rem;
             }
 
@@ -388,43 +389,43 @@ input[type="number"] {
             }
 
             .darkModeIcon {
-                height: 0.9rem;
-                min-height: 0.9rem;
-                max-height: 0.9rem;
-                width: 0.9rem;
-                min-width: 0.9rem;
-                max-width: 0.9rem;
-                margin: 0.3rem;
                 pointer-events: none;
-                opacity: 0.5;
+                height: 0.9rem;
+                max-height: 0.9rem;
+                min-height: 0.9rem;
+                width: 0.9rem;
+                max-width: 0.9rem;
+                min-width: 0.9rem;
                 color: $text;
-
-                &.dark {
-                    color: $textDark;
-                }
+                opacity: 0.5;
+                margin: 0.3rem;
 
                 @media only screen and (min-width: $mobileWidth) {
                     height: 1.6rem;
-                    min-height: 1.6rem;
                     max-height: 1.6rem;
+                    min-height: 1.6rem;
                     width: 1.6rem;
-                    min-width: 1.6rem;
                     max-width: 1.6rem;
+                    min-width: 1.6rem;
                     margin: 0.35rem;
+                }
+
+                &.dark {
+                    color: $textDark;
                 }
             }
         }
     }
 
     .account {
-        font-size: 1.2rem;
+        display: none;
         width: fit-content;
-        font-weight: 600;
-        margin-left: 1rem;
         opacity: 0.5;
+        margin-left: 1rem;
+        font-size: 1.2rem;
+        font-weight: 600;
         text-overflow: ellipsis;
         white-space: nowrap;
-        display: none;
 
         @media only screen and (min-width: $tabletWidth) {
             display: initial;
@@ -434,30 +435,30 @@ input[type="number"] {
     .userIconContainer {
         position: relative;
         height: $navBarHeightMobile;
-        min-height: $navBarHeightMobile;
         max-height: $navBarHeightMobile;
+        min-height: $navBarHeightMobile;
         width: $navBarHeightMobile;
-        min-width: $navBarHeightMobile;
         max-width: $navBarHeightMobile;
+        min-width: $navBarHeightMobile;
         padding: 0.3rem;
 
         @media only screen and (min-width: $mobileWidth) {
             height: $navBarHeight;
-            min-height: $navBarHeight;
             max-height: $navBarHeight;
+            min-height: $navBarHeight;
             width: $navBarHeight;
-            min-width: $navBarHeight;
             max-width: $navBarHeight;
+            min-width: $navBarHeight;
             padding: 1rem;
         }
 
         .userIcon {
             height: 100%;
-            min-height: 100%;
             max-height: 100%;
+            min-height: 100%;
             width: 100%;
-            min-width: 100%;
             max-width: 100%;
+            min-width: 100%;
             @include box-shadow(0 0 0.3rem rgba(0, 0, 0, 0.2));
             @include border-radius(4px);
 
@@ -470,23 +471,221 @@ input[type="number"] {
 }
 
 // #######################################
+//      CURRENT PIXEL
+// #######################################
+
+.currentPixel {
+    position: relative;
+    width: calc(100% - 1rem);
+    overflow: visible;
+    margin: 1rem 0.5rem 0.5rem;
+    padding: 0.5rem;
+    @include border-radius(8px);
+    @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
+
+    &.dark {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .title {
+        width: 100%;
+        padding-bottom: 0.3rem;
+        font-size: 0.9rem;
+        font-weight: 800;
+        text-align: center;
+
+        @media only screen and (min-width: $mobileWidth) {
+            padding-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+    }
+
+    .main {
+        display: flex;
+        width: 100%;
+        margin-bottom: 0.5rem;
+
+        .color {
+            height: 3.5rem;
+            max-height: 3.5rem;
+            min-height: 3.5rem;
+            width: 3.5rem;
+            max-width: 3.5rem;
+            min-width: 3.5rem;
+            margin: 0.3rem;
+            @include border-radius(8px);
+            @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
+
+            @media only screen and (min-width: $mobileWidth) {
+                height: 4rem;
+                max-height: 4rem;
+                min-height: 4rem;
+                width: 4rem;
+                max-width: 4rem;
+                min-width: 4rem;
+                margin: 0.5rem;
+            }
+        }
+
+        .info {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: center;
+            height: 3.5rem;
+            max-height: 3.5rem;
+            min-height: 3.5rem;
+            width: 100%;
+            margin: 0.3rem;
+
+            @media only screen and (min-width: $mobileWidth) {
+                height: 4rem;
+                max-height: 4rem;
+                min-height: 4rem;
+                margin: 0.5rem;
+            }
+
+            .row {
+                display: flex;
+                align-items: baseline;
+                width: 100%;
+                margin: 0;
+
+                .name {
+                    width: 2rem;
+                    opacity: 0.5;
+                    padding-right: 0.5rem;
+                    font-size: 0.5rem;
+                    font-weight: 700;
+                    text-align: right;
+
+                    @media only screen and (min-width: $mobileWidth) {
+                        font-size: 0.6rem;
+                    }
+                }
+
+                .coord {
+                    font-size: 1.1rem;
+                    font-weight: 800;
+
+                    @media only screen and (min-width: $mobileWidth) {
+                        font-size: 1.3rem;
+                    }
+
+                    &.first {
+                        padding-right: 0.6rem;
+                    }
+                }
+            }
+        }
+    }
+
+    .account {
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
+        cursor: pointer;
+        opacity: 0.5;
+        margin-bottom: 0.5rem;
+        padding: 0 0.5rem;
+        font-size: 0.6rem;
+        font-weight: 400;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        @media only screen and (min-width: $mobileWidth) {
+            font-size: 0.7rem;
+        }
+    }
+
+    .lower {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        overflow: visible;
+
+        .button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease-in-out;
+            transform: scale(1);
+            width: 40%;
+            cursor: pointer;
+            margin: 0.2rem;
+            padding: 0.3rem;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-align: center;
+            @include border-radius(100vw);
+            @include box-shadow(0 0 4px rgba(0, 0, 0, 0.2));
+
+            @media only screen and (min-width: $mobileWidth) {
+                width: 50%;
+                margin: 0.25rem;
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            &:hover {
+                @media only screen and (min-width: $mobileWidth) {
+                    transform: scale(1.05);
+                }
+            }
+
+            &.dark {
+                background-color: rgba(255, 255, 255, 0.08);
+            }
+
+            &.icon {
+                width: unset;
+                margin-left: 1rem;
+            }
+
+            .undoIcon {
+                pointer-events: none;
+                height: 1rem;
+                max-height: 1rem;
+                min-height: 1rem;
+                width: 1rem;
+                max-width: 1rem;
+                min-width: 1rem;
+                color: $text;
+                opacity: 0.5;
+
+                &.dark {
+                    color: $textDark;
+                }
+            }
+        }
+    }
+}
+
+// #######################################
 //      COLOR PICKER
 // #######################################
 
 .colorPicker {
     position: relative;
-    width: 100%;
-    height: 18rem;
     display: flex;
     flex-direction: column;
+    width: 100%;
 
     .react-colorful {
-        width: calc(100% - 2rem);
         flex-grow: 1;
-        margin: 1rem 1rem 0.5rem 1rem;
+        height: 8rem;
+        width: 100%;
         overflow: unset;
+        margin-top: 0.3rem;
         @include border-radius(10px);
         @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
+
+        @media only screen and (min-width: $mobileWidth) {
+            height: 12rem;
+            margin-top: 0.5rem;
+        }
 
         .react-colorful__saturation {
             border: none;
@@ -494,56 +693,74 @@ input[type="number"] {
         }
 
         .react-colorful__hue {
-            @include border-radius(0 0 10px 10px);
             height: 30px;
+            @include border-radius(0 0 10px 10px);
         }
+    }
+
+    .react-colorful__pointer {
+        cursor: pointer;
     }
 
     .inputs {
         position: relative;
-        width: 100%;
         display: flex;
-        justify-content: center;
-        align-items: center;
         display: grid;
+        align-items: center;
+        justify-content: center;
         grid-template-columns: 2fr 1fr 1fr 1fr;
-        padding: 0 1rem 1rem;
+        width: 100%;
         overflow: visible;
+        padding: 0 0.5rem 1rem;
+
+        @media only screen and (min-width: $mobileWidth) {
+            padding: 0 1rem 1rem;
+        }
 
         .container {
-            padding: 0.5rem 0 0 0;
             overflow: visible;
+            padding: 1rem 0 0 0;
 
             &:not(:first-child) {
-                padding: 0.5rem 0 0 0.5rem;
+                padding: 1rem 0 0 0.5rem;
             }
 
             .title {
                 width: 100%;
-                text-align: center;
-                font-size: 0.7rem;
                 opacity: 0.5;
+                margin-bottom: 0.1rem;
+                font-size: 0.6rem;
                 font-weight: 700;
-                margin-bottom: 0.3rem;
+                text-align: center;
+
+                @media only screen and (min-width: $mobileWidth) {
+                    font-size: 0.7rem;
+                    margin-bottom: 0.3rem;
+                }
             }
 
             .input {
                 width: 100%;
-                outline: none;
-                border: none;
                 background: none;
-                text-align: center;
-                font-size: 1rem;
-                padding: 0.25rem 0.5rem;
-                font-weight: 600;
                 color: $text;
+                border: none;
+                outline: none;
+                padding: 0.2rem 0.4rem;
+                font-size: 0.9rem;
+                font-weight: 600;
+                text-align: center;
                 @include border-radius(100vw);
                 @include box-shadow(0 0 5px rgba(0, 0, 0, 0.2));
 
+                @media only screen and (min-width: $mobileWidth) {
+                    padding: 0.25rem 0.5rem;
+                    font-size: 1rem;
+                }
+
                 &.dark {
-                    opacity: 0.8;
-                    color: $textDark;
                     background-color: rgba(255, 255, 255, 0.08);
+                    color: $textDark;
+                    opacity: 0.8;
                 }
 
                 &.invalid {
@@ -555,102 +772,46 @@ input[type="number"] {
 }
 
 // #######################################
-//      CURRENT PIXEL
+//      TOOLTIP
 // #######################################
 
-.currentPixel {
-    position: relative;
-    width: 100%;
-    padding: 1rem;
-    overflow: visible;
+.tooltip {
+    padding: 6px 16px !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    @include border-radius(100vw !important);
 }
 
 // #######################################
-//      PIXEL
+//      BOARD
 // #######################################
 
-.pixel {
+.board {
     position: relative;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+    width: calc(100% - 1rem);
+    max-width: calc(100% - 1rem);
+    height: calc(100% - 1.5rem);
+    max-height: calc(100% - 1.5rem);
+    min-height: calc(100% - 1.5rem);
     overflow: visible;
+    margin: 1rem 0.5rem 0.5rem;
+    padding: 0.5rem;
     @include border-radius(8px);
     @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
 
-    .main {
-        width: 100%;
-        display: flex;
+    .canvas {
+        image-rendering: optimizeSpeed; /* Older versions of FF */
+        image-rendering: -moz-crisp-edges; /* FF 6.0+ */
+        image-rendering: -webkit-optimize-contrast; /* Safari */
+        image-rendering: -o-crisp-edges; /* OS X & Windows Opera (12.02+) */
+        image-rendering: pixelated; /* Awesome future-browsers */
+        -ms-interpolation-mode: nearest-neighbor; /* IE */
 
-        .color {
-            height: 3rem;
-            min-height: 3rem;
-            max-height: 3rem;
-            width: 3rem;
-            min-width: 3rem;
-            max-width: 3rem;
-            margin: 0.5rem;
-            @include border-radius(8px);
+        &.overlay {
+            position: absolute;
+            left: 0;
+            right: 0;
+            pointer-events: none;
         }
-
-        .info {
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            height: 4rem;
-            min-height: 4rem;
-            max-height: 4rem;
-
-            .coords {
-                .title {
-                }
-
-                .coord {
-                }
-            }
-
-            .colorCode {
-            }
-        }
-
-        .buttons {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            height: 4rem;
-            min-height: 4rem;
-            max-height: 4rem;
-            width: 5rem;
-            min-width: 5rem;
-            max-width: 5rem;
-            margin: 0.5rem;
-
-            .button {
-                transition: all 0.2s ease-in-out;
-                font-size: 0.7rem;
-                line-height: 1.5rem;
-                font-weight: 800;
-                text-align: center;
-                //background-color: rgb(72, 194, 72);
-                height: 1.5rem;
-                width: calc(100% - 0.4rem);
-                margin: 0.2rem;
-                @include border-radius(100vw);
-                @include box-shadow(0 0 4px rgba(0, 0, 0, 0.2));
-            }
-        }
-    }
-
-    .account {
-        font-size: 0.7rem;
-        width: 100%;
-        max-width: 100%;
-        min-width: 100%;
-        font-weight: 600;
-        opacity: 0.5;
-        text-align: center;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        padding: 0.3rem 0.2rem;
     }
 }

@@ -14,7 +14,7 @@ export default function LoadingPage() {
     //   COMPONENT MOUNT
     // #################################################
 
-    // On componente mount
+    // On component mount
     useEffect(() => {
         const initialLoad = async () => {
             // Load Web3
