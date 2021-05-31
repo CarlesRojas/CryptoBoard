@@ -185,6 +185,18 @@ video {
     width: 100%;
 }
 
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
 // #######################################
 //      APP
 // #######################################
@@ -275,7 +287,7 @@ video {
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    @include box-shadow(0 0 20px rgba(0, 0, 0, 0.2));
+    @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
 
     @media only screen and (min-width: $mobileWidth) {
         height: $navBarHeight;
@@ -327,7 +339,7 @@ video {
         max-width: 3rem;
         height: 1.5rem;
         margin: 0.75rem;
-        @include box-shadow(0 0 10px rgba(0, 0, 0, 0.3));
+        @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
         @include border-radius(100vw);
 
         @media only screen and (min-width: $mobileWidth) {
@@ -353,7 +365,7 @@ video {
             max-width: 1.5rem;
             left: 0rem;
             pointer-events: none;
-            @include box-shadow(0 0 10px rgba(0, 0, 0, 0.3));
+            @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
             @include border-radius(100vw);
 
             @media only screen and (min-width: $mobileWidth) {
@@ -446,11 +458,11 @@ video {
             width: 100%;
             min-width: 100%;
             max-width: 100%;
-            @include box-shadow(0 0 0.3rem rgba(0, 0, 0, 0.3));
+            @include box-shadow(0 0 0.3rem rgba(0, 0, 0, 0.2));
             @include border-radius(4px);
 
             @media only screen and (min-width: $mobileWidth) {
-                @include box-shadow(0 0 10px rgba(0, 0, 0, 0.3));
+                @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
                 @include border-radius(8px);
             }
         }
@@ -462,4 +474,183 @@ video {
 // #######################################
 
 .colorPicker {
+    position: relative;
+    width: 100%;
+    height: 18rem;
+    display: flex;
+    flex-direction: column;
+
+    .react-colorful {
+        width: calc(100% - 2rem);
+        flex-grow: 1;
+        margin: 1rem 1rem 0.5rem 1rem;
+        overflow: unset;
+        @include border-radius(10px);
+        @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
+
+        .react-colorful__saturation {
+            border: none;
+            @include border-radius(10px 10px 0 0);
+        }
+
+        .react-colorful__hue {
+            @include border-radius(0 0 10px 10px);
+            height: 30px;
+        }
+    }
+
+    .inputs {
+        position: relative;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        padding: 0 1rem 1rem;
+        overflow: visible;
+
+        .container {
+            padding: 0.5rem 0 0 0;
+            overflow: visible;
+
+            &:not(:first-child) {
+                padding: 0.5rem 0 0 0.5rem;
+            }
+
+            .title {
+                width: 100%;
+                text-align: center;
+                font-size: 0.7rem;
+                opacity: 0.5;
+                font-weight: 700;
+                margin-bottom: 0.3rem;
+            }
+
+            .input {
+                width: 100%;
+                outline: none;
+                border: none;
+                background: none;
+                text-align: center;
+                font-size: 1rem;
+                padding: 0.25rem 0.5rem;
+                font-weight: 600;
+                color: $text;
+                @include border-radius(100vw);
+                @include box-shadow(0 0 5px rgba(0, 0, 0, 0.2));
+
+                &.dark {
+                    opacity: 0.8;
+                    color: $textDark;
+                    background-color: rgba(255, 255, 255, 0.08);
+                }
+
+                &.invalid {
+                    background-color: rgba(255, 0, 0, 0.1);
+                }
+            }
+        }
+    }
+}
+
+// #######################################
+//      CURRENT PIXEL
+// #######################################
+
+.currentPixel {
+    position: relative;
+    width: 100%;
+    padding: 1rem;
+    overflow: visible;
+}
+
+// #######################################
+//      PIXEL
+// #######################################
+
+.pixel {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    @include border-radius(8px);
+    @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
+
+    .main {
+        width: 100%;
+        display: flex;
+
+        .color {
+            height: 3rem;
+            min-height: 3rem;
+            max-height: 3rem;
+            width: 3rem;
+            min-width: 3rem;
+            max-width: 3rem;
+            margin: 0.5rem;
+            @include border-radius(8px);
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            height: 4rem;
+            min-height: 4rem;
+            max-height: 4rem;
+
+            .coords {
+                .title {
+                }
+
+                .coord {
+                }
+            }
+
+            .colorCode {
+            }
+        }
+
+        .buttons {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 4rem;
+            min-height: 4rem;
+            max-height: 4rem;
+            width: 5rem;
+            min-width: 5rem;
+            max-width: 5rem;
+            margin: 0.5rem;
+
+            .button {
+                transition: all 0.2s ease-in-out;
+                font-size: 0.7rem;
+                line-height: 1.5rem;
+                font-weight: 800;
+                text-align: center;
+                //background-color: rgb(72, 194, 72);
+                height: 1.5rem;
+                width: calc(100% - 0.4rem);
+                margin: 0.2rem;
+                @include border-radius(100vw);
+                @include box-shadow(0 0 4px rgba(0, 0, 0, 0.2));
+            }
+        }
+    }
+
+    .account {
+        font-size: 0.7rem;
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
+        font-weight: 600;
+        opacity: 0.5;
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding: 0.3rem 0.2rem;
+    }
 }

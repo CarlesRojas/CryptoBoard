@@ -40,6 +40,11 @@ const DataProvider = ({ children }) => {
     const numRows = useRef(-1);
     const pixelCount = useRef(-1);
     const pixels = useRef([]);
+    const coordsToRowCol = (coords) => (numRows < 0 ? null : { row: coords % numRows.current, col: Math.floor(coords / numRows.current) });
+    const rowColToCoords = (row, col) => (numRows < 0 ? null : col * numRows.current + row);
+
+    // COLOR PICKER
+    const [color, setColor] = useState("#ffffff");
 
     // #################################################
     //   PROVIDE DATA
@@ -69,6 +74,12 @@ const DataProvider = ({ children }) => {
                 numRows,
                 pixelCount,
                 pixels,
+                coordsToRowCol,
+                rowColToCoords,
+
+                // COLOR PICKER
+                color,
+                setColor,
             }}
         >
             {children}

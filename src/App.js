@@ -6,12 +6,12 @@ import { Utils } from "contexts/Utils";
 import { Data } from "contexts/Data";
 
 // Pages
-import Navbar from "components/Navbar";
-
-// Pages
 import LoadingPage from "pages/LoadingPage";
 import MainPage from "pages/MainPage";
 import ErrorPage from "pages/ErrorPage";
+
+// Components
+import Navbar from "components/Navbar";
 
 export default function App() {
     // Contexts
