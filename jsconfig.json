@@ -2,5 +2,5 @@
     "compilerOptions": {
         "baseUrl": "src"
     },
-    "include": ["src", "public/App.js", "test/CryptoBoard.test.js"]
+    "include": ["src", "public/App.js", "test/CryptoPlace.test.js"]
 }

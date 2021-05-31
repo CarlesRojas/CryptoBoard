@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from "react";
 import Web3 from "web3";
-import CryptoBoard from "abis/CryptoBoard.json";
+import CryptoPlace from "abis/CryptoPlace.json";
 
 // Contexts
 import { Data } from "contexts/Data";
@@ -9,8 +9,7 @@ import { Data } from "contexts/Data";
 export const API = createContext();
 
 const APIProvider = ({ children }) => {
-    // Contexts
-    const { account, networkID, networkInfo, contract, numRows, pixelCount, pixels } = useContext(Data);
+    const { account, setAccount, networkID, networkInfo, contract, numRows, pixelCount, pixels } = useContext(Data);
 
     // Load web3, the main eth account & the smart contract
     const load = async () => {
@@ -23,15 +22,15 @@ const APIProvider = ({ children }) => {
                 // Load accounts
                 const accounts = await window.web3.eth.getAccounts();
                 if (accounts.length <= 0) return "no-eth-accounts";
-                account.current = accounts[0];
+                setAccount(accounts[0]);
 
                 // Get network ID, the adress and the abi
                 networkID.current = await window.web3.eth.net.getId();
-                networkInfo.current = CryptoBoard.networks[networkID.current];
+                networkInfo.current = CryptoPlace.networks[networkID.current];
                 if (!networkInfo.current) return "contract-not-deployed";
 
                 // Load smart contract
-                contract.current = new window.web3.eth.Contract(CryptoBoard.abi, networkInfo.current.address);
+                contract.current = new window.web3.eth.Contract(CryptoPlace.abi, networkInfo.current.address);
 
                 // Success
                 return "success";
@@ -118,7 +117,7 @@ const APIProvider = ({ children }) => {
 
         try {
             // Change pixel color
-            await contract.current.methods.changeColor(coord, newColor).send({ from: account.current });
+            await contract.current.methods.changeColor(coord, newColor).send({ from: account });
 
             // Update pixels
             pixels.current[coord]["1"] = newColor;

@@ -1,4 +1,4 @@
-# CryptoBoard
+# CryptoPlace
 
 ### Compile the smart contracts
 
@@ -15,7 +15,7 @@
 ### Deploy contract
 
 `truffle console`
-`contract = await CryptoBoard.deployed()`
+`contract = await CryptoPlace.deployed()`
 
 #### Get Info
 

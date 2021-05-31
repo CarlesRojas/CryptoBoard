@@ -10,8 +10,6 @@ export default function MainPage() {
     const { loadingDone, numRows, pixelCount, pixels } = useContext(Data);
     const { changePixelColor } = useContext(API);
 
-    console.log("render");
-
     // #################################################
     //   COMPONENT MOUNT
     // #################################################
@@ -53,7 +51,11 @@ export default function MainPage() {
     //   RENDER
     // #################################################
 
-    return <div className="mainPage"></div>;
+    return (
+        <div className="mainPage">
+            <div className="sidebar"></div>
+        </div>
+    );
 }
 
 /* COORDINATE SYSTEM

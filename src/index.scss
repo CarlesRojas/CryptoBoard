@@ -14,9 +14,19 @@
 //      VARIABLES
 // #######################################
 
-$text: #3c3536;
-$font-size: 18px;
-$line-height: 22px;
+$background: #f5f5f5;
+$text: #0c0c0c;
+$backgroundDark: #0c0c0c;
+$textDark: #f5f5f5;
+
+$fontSize: 18px;
+$lineHeight: 22px;
+
+$navBarHeight: 5rem;
+$navBarHeightMobile: 2.5rem;
+
+$tabletWidth: 1100px;
+$mobileWidth: 768px;
 
 // #######################################
 //      MIXINS
@@ -141,7 +151,7 @@ html {
     height: 100%;
     width: 100%;
     overflow: hidden;
-    font-size: $font-size;
+    font-size: $fontSize;
     @include touch-action(none);
 }
 
@@ -151,11 +161,18 @@ body {
     height: 100%;
     width: 100%;
     overflow: hidden;
+    background-color: $background;
+    color: $text;
 
     font-family: "Montserrat", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     @include touch-action(none);
+
+    &.dark {
+        background-color: $backgroundDark;
+        color: $textDark;
+    }
 }
 
 img,
@@ -166,7 +183,6 @@ video {
 #root {
     height: 100%;
     width: 100%;
-    color: $text;
 }
 
 // #######################################
@@ -185,25 +201,49 @@ video {
 // ##############################################################################
 // ##############################################################################
 
+// #######################################
+//      LOADING PAGE
+// #######################################
+
 .loadingPage {
     position: relative;
-    height: 100%;
+    height: calc(100% - $navBarHeightMobile);
     width: 100%;
     background-color: rgb(255, 203, 203);
+
+    @media only screen and (min-width: $mobileWidth) {
+        height: calc(100% - $navBarHeight);
+    }
 }
+
+// #######################################
+//      MAIN PAGE
+// #######################################
 
 .mainPage {
     position: relative;
-    height: 100%;
+    height: calc(100% - $navBarHeightMobile);
     width: 100%;
-    background-color: rgb(203, 255, 207);
+    //background-color: rgb(203, 255, 207);
+
+    @media only screen and (min-width: $mobileWidth) {
+        height: calc(100% - $navBarHeight);
+    }
 }
+
+// #######################################
+//      ERROR PAGE
+// #######################################
 
 .errorPage {
     position: relative;
-    height: 100%;
+    height: calc(100% - $navBarHeightMobile);
     width: 100%;
     background-color: rgb(203, 226, 255);
+
+    @media only screen and (min-width: $mobileWidth) {
+        height: calc(100% - $navBarHeight);
+    }
 }
 
 // ##############################################################################
@@ -211,3 +251,189 @@ video {
 //      COMPONENTS
 // ##############################################################################
 // ##############################################################################
+
+// #######################################
+//      NAVBAR
+// #######################################
+
+.navbar {
+    position: relative;
+    height: $navBarHeightMobile;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    @include box-shadow(0 0 20px rgba(0, 0, 0, 0.2));
+
+    @media only screen and (min-width: $mobileWidth) {
+        height: $navBarHeight;
+    }
+
+    &.dark {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .logo {
+        height: $navBarHeightMobile;
+        min-height: $navBarHeightMobile;
+        max-height: $navBarHeightMobile;
+        width: $navBarHeightMobile;
+        min-width: $navBarHeightMobile;
+        max-width: $navBarHeightMobile;
+        padding: 0.5rem;
+        margin-left: 0.5rem;
+
+        @media only screen and (min-width: $mobileWidth) {
+            height: $navBarHeight;
+            min-height: $navBarHeight;
+            max-height: $navBarHeight;
+            width: $navBarHeight;
+            min-width: $navBarHeight;
+            max-width: $navBarHeight;
+            padding: 1.2rem;
+            margin-left: 1rem;
+        }
+    }
+
+    .name {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0 1rem 0 0.5rem;
+        flex-grow: 1;
+        min-width: fit-content;
+
+        @media only screen and (min-width: $mobileWidth) {
+            font-size: 1.5rem;
+            margin: 0 2rem 0 1rem;
+        }
+    }
+
+    .toggle {
+        position: relative;
+        width: 3rem;
+        min-width: 3rem;
+        max-width: 3rem;
+        height: 1.5rem;
+        margin: 0.75rem;
+        @include box-shadow(0 0 10px rgba(0, 0, 0, 0.3));
+        @include border-radius(100vw);
+
+        @media only screen and (min-width: $mobileWidth) {
+            width: 4.6rem;
+            min-width: 4.6rem;
+            max-width: 4.6rem;
+            height: 2.3rem;
+            margin: 1.3rem;
+        }
+
+        &.dark {
+            background-color: rgba(255, 255, 255, 0.07);
+        }
+
+        .handle {
+            transition: left 0.2s ease-in-out;
+            position: absolute;
+            height: 1.5rem;
+            min-height: 1.5rem;
+            max-height: 1.5rem;
+            width: 1.5rem;
+            min-width: 1.5rem;
+            max-width: 1.5rem;
+            left: 0rem;
+            pointer-events: none;
+            @include box-shadow(0 0 10px rgba(0, 0, 0, 0.3));
+            @include border-radius(100vw);
+
+            @media only screen and (min-width: $mobileWidth) {
+                height: 2.3rem;
+                min-height: 2.3rem;
+                max-height: 2.3rem;
+                width: 2.3rem;
+                min-width: 2.3rem;
+                max-width: 2.3rem;
+                left: 0rem;
+            }
+
+            &.dark {
+                left: 1.5rem;
+                background-color: rgba(255, 255, 255, 0.08);
+
+                @media only screen and (min-width: $mobileWidth) {
+                    left: 2.3rem;
+                }
+            }
+
+            .darkModeIcon {
+                height: 0.9rem;
+                min-height: 0.9rem;
+                max-height: 0.9rem;
+                width: 0.9rem;
+                min-width: 0.9rem;
+                max-width: 0.9rem;
+                margin: 0.3rem;
+                pointer-events: none;
+                opacity: 0.5;
+                color: $text;
+
+                &.dark {
+                    color: $textDark;
+                }
+
+                @media only screen and (min-width: $mobileWidth) {
+                    height: 1.6rem;
+                    min-height: 1.6rem;
+                    max-height: 1.6rem;
+                    width: 1.6rem;
+                    min-width: 1.6rem;
+                    max-width: 1.6rem;
+                    margin: 0.35rem;
+                }
+            }
+        }
+    }
+
+    .account {
+        font-size: 1.2rem;
+        width: fit-content;
+        font-weight: 600;
+        margin-left: 1rem;
+        opacity: 0.5;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: none;
+
+        @media only screen and (min-width: $tabletWidth) {
+            display: initial;
+        }
+    }
+
+    .userIconContainer {
+        position: relative;
+        height: $navBarHeight;
+        min-height: $navBarHeight;
+        max-height: $navBarHeight;
+        width: $navBarHeight;
+        min-width: $navBarHeight;
+        max-width: $navBarHeight;
+        padding: 1rem;
+        display: none;
+
+        @media only screen and (min-width: $mobileWidth) {
+            display: initial;
+        }
+
+        .userIcon {
+            background-color: white;
+            height: 100%;
+            min-height: 100%;
+            max-height: 100%;
+            width: 100%;
+            min-width: 100%;
+            max-width: 100%;
+            padding: 0.2rem;
+            @include box-shadow(0 0 10px rgba(0, 0, 0, 0.3));
+            @include border-radius(8px);
+        }
+    }
+}

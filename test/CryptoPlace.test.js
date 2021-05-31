@@ -1,14 +1,14 @@
-const CryptoBoard = artifacts.require("./CryptoBoard.sol");
+const CryptoPlace = artifacts.require("./CryptoPlace.sol");
 
 // Import Chai
 require("chai").use(require("chai-as-promised")).should();
 
 // Testing
-contract("CryptoBoard", ([deployer, buyer]) => {
+contract("CryptoPlace", ([deployer, buyer]) => {
     let contract;
 
     before(async () => {
-        contract = await CryptoBoard.deployed();
+        contract = await CryptoPlace.deployed();
     });
 
     describe("deployment", async () => {

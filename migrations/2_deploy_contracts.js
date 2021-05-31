@@ -1,5 +1,5 @@
-const CryptoBoard = artifacts.require("CryptoBoard");
+const CryptoPlace = artifacts.require("CryptoPlace");
 
 module.exports = function (deployer) {
-    deployer.deploy(CryptoBoard);
+    deployer.deploy(CryptoPlace);
 };
