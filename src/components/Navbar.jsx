@@ -19,7 +19,13 @@ export default function Navbar() {
     //   RENDER
     // #################################################
 
-    const userIconSrc = account ? `data:image/png;base64,${new Identicon(account, 56).toString()}` : "";
+    // Identicon
+    const identiconOptions = {
+        background: useDarkMode ? [255, 255, 255, 255 * 0.07] : [255, 255, 255, 255],
+        margin: 0.2,
+        size: 64,
+    };
+    const userIconSrc = account ? `data:image/png;base64,${new Identicon(account, identiconOptions).toString()}` : "";
 
     return (
         <div className={classnames("navbar", { dark: useDarkMode })}>
