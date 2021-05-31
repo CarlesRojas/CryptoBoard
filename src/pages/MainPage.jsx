@@ -54,6 +54,7 @@ export default function MainPage() {
     return (
         <div className="mainPage">
             <div className="sidebar"></div>
+            <div className="board"></div>
         </div>
     );
 }

@@ -207,12 +207,12 @@ video {
 
 .loadingPage {
     position: relative;
-    height: calc(100% - $navBarHeightMobile);
+    height: calc(100% - #{$navBarHeightMobile});
     width: 100%;
     background-color: rgb(255, 203, 203);
 
     @media only screen and (min-width: $mobileWidth) {
-        height: calc(100% - $navBarHeight);
+        height: calc(100% - #{$navBarHeight});
     }
 }
 
@@ -222,12 +222,23 @@ video {
 
 .mainPage {
     position: relative;
-    height: calc(100% - $navBarHeightMobile);
+    height: calc(100% - #{$navBarHeightMobile});
     width: 100%;
-    //background-color: rgb(203, 255, 207);
+    display: flex;
 
     @media only screen and (min-width: $mobileWidth) {
-        height: calc(100% - $navBarHeight);
+        height: calc(100% - #{$navBarHeight});
+    }
+
+    .sidebar {
+        height: 100%;
+        width: 22rem;
+    }
+
+    .board {
+        height: 100%;
+        flex-grow: 1;
+        background-color: rgb(203, 255, 207);
     }
 }
 
@@ -237,12 +248,12 @@ video {
 
 .errorPage {
     position: relative;
-    height: calc(100% - $navBarHeightMobile);
+    height: calc(100% - #{$navBarHeightMobile});
     width: 100%;
     background-color: rgb(203, 226, 255);
 
     @media only screen and (min-width: $mobileWidth) {
-        height: calc(100% - $navBarHeight);
+        height: calc(100% - #{$navBarHeight});
     }
 }
 
@@ -444,4 +455,11 @@ video {
             }
         }
     }
+}
+
+// #######################################
+//      COLOR PICKER
+// #######################################
+
+.colorPicker {
 }
