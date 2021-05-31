@@ -1,10 +1,9 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext } from "react";
 import Identicon from "identicon.js";
 import classnames from "classnames";
 import SVG from "react-inlinesvg";
 
 // Contexts
-import { Utils } from "contexts/Utils";
 import { Data } from "contexts/Data";
 
 // Icons
@@ -14,7 +13,6 @@ import LightIcon from "resources/icons/light.svg";
 
 export default function Navbar() {
     // Contexts
-    const { getCookie } = useContext(Utils);
     const { account, useDarkMode, setDarkMode } = useContext(Data);
 
     // #################################################

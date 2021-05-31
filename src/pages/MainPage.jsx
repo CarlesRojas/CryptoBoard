@@ -3,12 +3,12 @@ import { Redirect } from "react-router-dom";
 
 // Contexts
 import { Data } from "contexts/Data";
-import { API } from "contexts/API";
+//import { API } from "contexts/API";
 
 export default function MainPage() {
     // Contexts
     const { loadingDone, numRows, pixelCount, pixels } = useContext(Data);
-    const { changePixelColor } = useContext(API);
+    //const { changePixelColor } = useContext(API);
 
     // #################################################
     //   COMPONENT MOUNT

@@ -8,7 +8,7 @@ export const Data = createContext();
 
 const DataProvider = ({ children }) => {
     // Contexts
-    const { getCookie, setCookie } = useContext(Utils);
+    const { setCookie } = useContext(Utils);
 
     // LOADING CHECK
     const loadingDone = useRef(false);
