@@ -410,17 +410,22 @@ video {
 
     .userIconContainer {
         position: relative;
-        height: $navBarHeight;
-        min-height: $navBarHeight;
-        max-height: $navBarHeight;
-        width: $navBarHeight;
-        min-width: $navBarHeight;
-        max-width: $navBarHeight;
-        padding: 1rem;
-        display: none;
+        height: $navBarHeightMobile;
+        min-height: $navBarHeightMobile;
+        max-height: $navBarHeightMobile;
+        width: $navBarHeightMobile;
+        min-width: $navBarHeightMobile;
+        max-width: $navBarHeightMobile;
+        padding: 0.3rem;
 
         @media only screen and (min-width: $mobileWidth) {
-            display: initial;
+            height: $navBarHeight;
+            min-height: $navBarHeight;
+            max-height: $navBarHeight;
+            width: $navBarHeight;
+            min-width: $navBarHeight;
+            max-width: $navBarHeight;
+            padding: 1rem;
         }
 
         .userIcon {
@@ -430,8 +435,13 @@ video {
             width: 100%;
             min-width: 100%;
             max-width: 100%;
-            @include box-shadow(0 0 10px rgba(0, 0, 0, 0.3));
-            @include border-radius(8px);
+            @include box-shadow(0 0 0.3rem rgba(0, 0, 0, 0.3));
+            @include border-radius(4px);
+
+            @media only screen and (min-width: $mobileWidth) {
+                @include box-shadow(0 0 10px rgba(0, 0, 0, 0.3));
+                @include border-radius(8px);
+            }
         }
     }
 }
