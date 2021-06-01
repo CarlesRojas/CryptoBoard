@@ -249,6 +249,9 @@ input[type="number"] {
     }
 
     .boardContainer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         position: relative;
         flex-grow: 1;
         height: 100%;
@@ -790,28 +793,41 @@ input[type="number"] {
     position: relative;
     width: calc(100% - 1rem);
     max-width: calc(100% - 1rem);
-    height: calc(100% - 1.5rem);
-    max-height: calc(100% - 1.5rem);
-    min-height: calc(100% - 1.5rem);
+    min-width: calc(100% - 1rem);
+    height: calc(100% - 2rem);
+    max-height: calc(100% - 2rem);
+    min-height: calc(100% - 2rem);
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0.5rem;
     overflow: visible;
-    margin: 1rem 0.5rem 0.5rem;
-    padding: 0.5rem;
-    @include border-radius(8px);
-    @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
 
-    .canvas {
-        image-rendering: optimizeSpeed; /* Older versions of FF */
-        image-rendering: -moz-crisp-edges; /* FF 6.0+ */
-        image-rendering: -webkit-optimize-contrast; /* Safari */
-        image-rendering: -o-crisp-edges; /* OS X & Windows Opera (12.02+) */
-        image-rendering: pixelated; /* Awesome future-browsers */
-        -ms-interpolation-mode: nearest-neighbor; /* IE */
+    .canvasContainer {
+        width: fit-content;
+        height: fit-content;
+        overflow: visible;
+        padding: 0.5rem;
+        @include border-radius(8px);
+        @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
 
-        &.overlay {
-            position: absolute;
-            left: 0;
-            right: 0;
-            pointer-events: none;
+        &.dark {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .canvas {
+            image-rendering: optimizeSpeed; /* Older versions of FF */
+            image-rendering: -moz-crisp-edges; /* FF 6.0+ */
+            image-rendering: -webkit-optimize-contrast; /* Safari */
+            image-rendering: -o-crisp-edges; /* OS X & Windows Opera (12.02+) */
+            image-rendering: pixelated; /* Awesome future-browsers */
+            -ms-interpolation-mode: nearest-neighbor; /* IE */
+
+            &.overlay {
+                position: absolute;
+                left: 0;
+                right: 0;
+                pointer-events: none;
+            }
         }
     }
 }

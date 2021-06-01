@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useContext } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import classNames from "classnames";
 
 // Contexts
 import { Data } from "contexts/Data";
@@ -9,7 +10,7 @@ const PIXELS_PER_PIXEL = 20;
 
 export default function Board() {
     // Contexts
-    const { numRows, pixelCount, pixels, coordsToRowCol } = useContext(Data);
+    const { numRows, pixelCount, pixels, coordsToRowCol, useDarkMode } = useContext(Data);
 
     // #################################################
     //   CANVAS
@@ -17,6 +18,7 @@ export default function Board() {
 
     // Refs
     const boardRef = useRef(null);
+    const containerRef = useRef(null);
     const canvasRef = useRef(null);
     const canvasHighlightRef = useRef(null);
     const canvasSelectRef = useRef(null);
@@ -65,12 +67,10 @@ export default function Board() {
 
     // On mouse move over the canvas
     const onCanvasMouseMove = (event) => {
-        const pixelWidth = currCanvasHeight.current / numRows.current;
-
         // Get row and col
         const pos = {
-            col: Math.max(0, Math.min(pixelCount.current / numRows.current - 1, Math.floor(event.offsetX / pixelWidth))),
-            row: Math.max(0, Math.min(numRows.current - 1, Math.floor(event.offsetY / pixelWidth))),
+            col: Math.max(0, Math.min(pixelCount.current / numRows.current - 1, Math.floor(event.offsetX / currPixelWidth.crrent))),
+            row: Math.max(0, Math.min(numRows.current - 1, Math.floor(event.offsetY / currPixelWidth.crrent))),
         };
 
         // Highlight pixel
@@ -85,12 +85,10 @@ export default function Board() {
 
     // On mouse release over the canvas
     const onCanvasMouseUp = (event) => {
-        const pixelWidth = currCanvasHeight.current / numRows.current;
-
         // Get row and col
         const pos = {
-            col: Math.max(0, Math.min(pixelCount.current / numRows.current - 1, Math.floor(event.offsetX / pixelWidth))),
-            row: Math.max(0, Math.min(numRows.current - 1, Math.floor(event.offsetY / pixelWidth))),
+            col: Math.max(0, Math.min(pixelCount.current / numRows.current - 1, Math.floor(event.offsetX / currPixelWidth.crrent))),
+            row: Math.max(0, Math.min(numRows.current - 1, Math.floor(event.offsetY / currPixelWidth.crrent))),
         };
 
         // Highlight pixel
@@ -104,8 +102,8 @@ export default function Board() {
     // Resize timeout
     const resizeTimeout = useRef(null);
 
-    // Current height
-    const currCanvasHeight = useRef(0);
+    // Current canvas size
+    const currPixelWidth = useRef(0);
 
     // On window resize
     const onResize = (direct) => {
@@ -119,15 +117,41 @@ export default function Board() {
 
     // Resize canvases
     const resizeCanvases = () => {
-        // Parent height
-        const parentStyle = window.getComputedStyle(boardRef.current, null);
-        const parentHeight = parseInt(parentStyle.getPropertyValue("height").slice(0, -2)) - parseInt(parentStyle.getPropertyValue("padding-top").slice(0, -2)) * 2;
-        currCanvasHeight.current = parentHeight;
+        // Styles
+        const boardStyle = window.getComputedStyle(boardRef.current, null);
+        const containerStyle = window.getComputedStyle(containerRef.current, null);
 
-        // Resize
-        canvasRef.current.style.height = `${parentHeight}px`;
-        canvasHighlightRef.current.style.height = `${parentHeight}px`;
-        canvasSelectRef.current.style.height = `${parentHeight}px`;
+        // Get height
+        const canvasNewHeight = parseInt(boardStyle.getPropertyValue("height").slice(0, -2)) - parseInt(containerStyle.getPropertyValue("padding-top").slice(0, -2)) * 2;
+
+        // Get width
+        const canvasNewWidth = parseInt(boardStyle.getPropertyValue("width").slice(0, -2)) - parseInt(containerStyle.getPropertyValue("padding-left").slice(0, -2)) * 2;
+
+        // Scale to fit height
+        if (canvasNewHeight < canvasNewWidth) {
+            // Set height
+            canvasRef.current.style.height = `${canvasNewHeight}px`;
+            canvasHighlightRef.current.style.height = `${canvasNewHeight}px`;
+            canvasSelectRef.current.style.height = `${canvasNewHeight}px`;
+
+            // Unset width
+            canvasRef.current.style.width = `unset`;
+            canvasHighlightRef.current.style.width = `unset`;
+            canvasSelectRef.current.style.width = `unset`;
+        }
+
+        // Scale to fit width
+        else {
+            // Unset height
+            canvasRef.current.style.height = `unset`;
+            canvasHighlightRef.current.style.height = `unset`;
+            canvasSelectRef.current.style.height = `unset`;
+
+            // Set width
+            canvasRef.current.style.width = `${canvasNewWidth}px`;
+            canvasHighlightRef.current.style.width = `${canvasNewWidth}px`;
+            canvasSelectRef.current.style.width = `${canvasNewWidth}px`;
+        }
     };
 
     // #################################################
@@ -179,33 +203,32 @@ export default function Board() {
 
     return (
         <div className="board" ref={boardRef}>
-            <TransformWrapper>
-                <TransformComponent>
-                    <canvas
-                        className="canvas"
-                        width={Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL}
-                        height={numRows.current * PIXELS_PER_PIXEL}
-                        ref={canvasRef}
-                        style={{ zIndex: 0 }}
-                    ></canvas>
+            <div className={classNames("canvasContainer", { dark: useDarkMode })} ref={containerRef}>
+                <TransformWrapper pan={{ paddingSize: 0 }}>
+                    <TransformComponent>
+                        <canvas
+                            className="canvas"
+                            width={Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL}
+                            height={numRows.current * PIXELS_PER_PIXEL}
+                            ref={canvasRef}
+                        ></canvas>
 
-                    <canvas
-                        className="canvas overlay"
-                        width={Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL}
-                        height={numRows.current * PIXELS_PER_PIXEL}
-                        ref={canvasHighlightRef}
-                        style={{ zIndex: 1 }}
-                    ></canvas>
+                        <canvas
+                            className="canvas overlay"
+                            width={Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL}
+                            height={numRows.current * PIXELS_PER_PIXEL}
+                            ref={canvasSelectRef}
+                        ></canvas>
 
-                    <canvas
-                        className="canvas overlay"
-                        width={Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL}
-                        height={numRows.current * PIXELS_PER_PIXEL}
-                        ref={canvasSelectRef}
-                        style={{ zIndex: 2 }}
-                    ></canvas>
-                </TransformComponent>
-            </TransformWrapper>
+                        <canvas
+                            className="canvas overlay"
+                            width={Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL}
+                            height={numRows.current * PIXELS_PER_PIXEL}
+                            ref={canvasHighlightRef}
+                        ></canvas>
+                    </TransformComponent>
+                </TransformWrapper>
+            </div>
         </div>
     );
 }
