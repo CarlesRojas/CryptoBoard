@@ -10,7 +10,7 @@ const PIXELS_PER_PIXEL = 20;
 
 export default function Board() {
     // Contexts
-    const { numRows, pixelCount, pixels, coordsToRowCol, rowColToCoords, useDarkMode, setColor, setSelectedPixel, currSelectedPixel } = useContext(Data);
+    const { numRows, pixelCount, pixels, coordsToRowCol, rowColToCoords, useDarkMode, color, setColor, setSelectedPixel, currSelectedPixel } = useContext(Data);
 
     // #################################################
     //   CANVAS
@@ -19,10 +19,16 @@ export default function Board() {
     // Refs
     const boardRef = useRef(null);
     const containerRef = useRef(null);
+
+    // Canvas refs
     const canvasRef = useRef(null);
+    const canvasColorRef = useRef(null);
     const canvasHighlightRef = useRef(null);
     const canvasSelectRef = useRef(null);
+
+    // Canvas contexts
     const ctx = useRef(null);
+    const ctxColor = useRef(null);
     const ctxHighlight = useRef(null);
     const ctxSelect = useRef(null);
 
@@ -30,6 +36,12 @@ export default function Board() {
     const paintPixel = (row, col, color) => {
         ctx.current.fillStyle = color;
         ctx.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL, PIXELS_PER_PIXEL, PIXELS_PER_PIXEL);
+    };
+
+    // Paint provisional pixel
+    const paintProvisionalPixel = (row, col, color) => {
+        ctxColor.current.fillStyle = color;
+        ctxColor.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL, PIXELS_PER_PIXEL, PIXELS_PER_PIXEL);
     };
 
     // Highlight a pixel
@@ -50,7 +62,8 @@ export default function Board() {
         // Get new pixel coords
         const newSelectedPixel = rowColToCoords(row, col);
 
-        // Clear canvas
+        // Clear canvases
+        ctxColor.current.clearRect(0, 0, Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL, numRows.current * PIXELS_PER_PIXEL);
         ctxSelect.current.clearRect(0, 0, Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL, numRows.current * PIXELS_PER_PIXEL);
 
         // If clicked on the same pixel again, diselect it
@@ -81,7 +94,7 @@ export default function Board() {
             setSelectedPixel(newSelectedPixel);
 
             // Set the color
-            setColor(pixels.current[newSelectedPixel].color);
+            setColor(pixels.current[newSelectedPixel].color.toLowerCase());
         }
     };
 
@@ -115,6 +128,26 @@ export default function Board() {
         selectPixel(pos.row, pos.col);
     };
 
+    // On color changed in the chain
+    const onColorChanged = ({ pixelCoords, newColor }) => {
+        // Get row and col
+        const coords = coordsToRowCol(pixelCoords);
+
+        // Paint the pixel
+        paintPixel(coords.row, coords.col, newColor);
+    };
+
+    // Paint provisional color when it is updated in the color picker
+    useEffect(() => {
+        if (currSelectedPixel.current >= 0 && currSelectedPixel.current <= pixelCount.current) {
+            // Get row and col
+            const coords = coordsToRowCol(currSelectedPixel.current);
+            paintProvisionalPixel(coords.row, coords.col, color);
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [color]);
+
     // #################################################
     //   RESIZE
     // #################################################
@@ -130,9 +163,7 @@ export default function Board() {
         if (resizeTimeout.current) clearTimeout(resizeTimeout.current);
 
         if (direct) resizeCanvases();
-        else {
-            resizeTimeout.current = setTimeout(resizeCanvases, 500);
-        }
+        else resizeTimeout.current = setTimeout(resizeCanvases, 500);
     };
 
     // Resize canvases
@@ -151,11 +182,13 @@ export default function Board() {
         if (canvasNewHeight < canvasNewWidth) {
             // Set height
             canvasRef.current.style.height = `${canvasNewHeight}px`;
+            canvasColorRef.current.style.height = `${canvasNewHeight}px`;
             canvasHighlightRef.current.style.height = `${canvasNewHeight}px`;
             canvasSelectRef.current.style.height = `${canvasNewHeight}px`;
 
             // Unset width
             canvasRef.current.style.width = `unset`;
+            canvasColorRef.current.style.width = `unset`;
             canvasHighlightRef.current.style.width = `unset`;
             canvasSelectRef.current.style.width = `unset`;
 
@@ -167,11 +200,13 @@ export default function Board() {
         else {
             // Unset height
             canvasRef.current.style.height = `unset`;
+            canvasColorRef.current.style.height = `unset`;
             canvasHighlightRef.current.style.height = `unset`;
             canvasSelectRef.current.style.height = `unset`;
 
             // Set width
             canvasRef.current.style.width = `${canvasNewWidth}px`;
+            canvasColorRef.current.style.width = `${canvasNewWidth}px`;
             canvasHighlightRef.current.style.width = `${canvasNewWidth}px`;
             canvasSelectRef.current.style.width = `${canvasNewWidth}px`;
 
@@ -194,10 +229,14 @@ export default function Board() {
         canvasRefEffect.addEventListener("mousemove", onCanvasMouseMove);
         canvasRefEffect.addEventListener("mouseleave", onCanvasMouseLeave);
         canvasRefEffect.addEventListener("mouseup", onCanvasMouseUp);
+        window.PubSub.sub("colorChanged", onColorChanged);
+
+        // Resize on load
         onResize(true);
 
         // Save 2D Contexts
         ctx.current = canvasRef.current.getContext("2d");
+        ctxColor.current = canvasColorRef.current.getContext("2d");
         ctxHighlight.current = canvasHighlightRef.current.getContext("2d");
         ctxSelect.current = canvasSelectRef.current.getContext("2d");
 
@@ -215,6 +254,7 @@ export default function Board() {
             canvasRefEffect.removeEventListener("mousemove", onCanvasMouseMove);
             canvasRefEffect.removeEventListener("mouseleave", onCanvasMouseLeave);
             canvasRefEffect.removeEventListener("mouseup", onCanvasMouseUp);
+            window.PubSub.unsub("colorChanged", onColorChanged);
 
             // Clear timeouts
             if (resizeTimeout.current) clearTimeout(resizeTimeout.current);
@@ -237,6 +277,13 @@ export default function Board() {
                             width={Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL}
                             height={numRows.current * PIXELS_PER_PIXEL}
                             ref={canvasRef}
+                        ></canvas>
+
+                        <canvas
+                            className="canvas overlay"
+                            width={Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL}
+                            height={numRows.current * PIXELS_PER_PIXEL}
+                            ref={canvasColorRef}
                         ></canvas>
 
                         <canvas

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { Redirect } from "react-router-dom";
 
 // Contexts
@@ -11,30 +11,7 @@ import Board from "components/Board";
 
 export default function MainPage() {
     // Contexts
-    const { loadingDone, /*numRows,*/ pixelCount, pixels, account, color, selectedPixel } = useContext(Data);
-    //const { changePixelColor } = useContext(API);
-
-    // #################################################
-    //   COMPONENT MOUNT
-    // #################################################
-
-    // On component mount
-    useEffect(() => {
-        const getPixelInfo = async () => {
-            //await changePixelColor("14", "#593838");
-            //console.log(`Num rows: ${numRows.current}`);
-            //console.log(`Total pixels: ${pixelCount.current}`);
-            //console.log(pixels.current);
-        };
-        getPixelInfo();
-
-        // Subscribe to events
-
-        // Unsubscribe from events
-        return () => {};
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const { loadingDone, pixelCount, pixels, color, selectedPixel } = useContext(Data);
 
     // #################################################
     //   REDIRECT LOGIC
@@ -56,9 +33,9 @@ export default function MainPage() {
     // Current pixel
     const currPixel =
         selectedPixel >= 0 && selectedPixel < pixelCount.current ? (
-            <CurrentPixel account={pixels.current[selectedPixel].owner} coords={pixels.current[selectedPixel].coords} color={pixels.current[selectedPixel].color}></CurrentPixel>
+            <CurrentPixel owner={pixels.current[selectedPixel].author} coords={parseInt(pixels.current[selectedPixel].coords)} color={color}></CurrentPixel>
         ) : (
-            <CurrentPixel />
+            <CurrentPixel owner={null} coords={null} color={null}></CurrentPixel>
         );
 
     return (

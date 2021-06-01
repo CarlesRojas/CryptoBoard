@@ -78,7 +78,8 @@ const APIProvider = ({ children }) => {
         if (pixelCount.current >= 0) return pixelCount.current;
 
         try {
-            pixelCount.current = await contract.current.methods.pixelCount().call();
+            const value = await contract.current.methods.pixelCount().call();
+            pixelCount.current = parseInt(value);
             return pixelCount.current;
         } catch (error) {
             console.log(error);
@@ -120,10 +121,13 @@ const APIProvider = ({ children }) => {
             await contract.current.methods.changeColor(coord, newColor).send({ from: account });
 
             // Update pixels
-            pixels.current[coord]["1"] = newColor;
-            pixels.current[coord]["color"] = newColor;
+            pixels.current[coord]["1"] = newColor.toLowerCase();
+            pixels.current[coord]["color"] = newColor.toLowerCase();
+
+            return true;
         } catch (error) {
             console.log(error);
+            return false;
         }
     };
 
