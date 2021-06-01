@@ -11,7 +11,7 @@ import Board from "components/Board";
 
 export default function MainPage() {
     // Contexts
-    const { loadingDone, /*numRows, pixelCount, pixels,*/ account, color } = useContext(Data);
+    const { loadingDone, /*numRows,*/ pixelCount, pixels, account, color, selectedPixel } = useContext(Data);
     //const { changePixelColor } = useContext(API);
 
     // #################################################
@@ -53,11 +53,17 @@ export default function MainPage() {
     //   RENDER
     // #################################################
 
+    // Current pixel
+    const currPixel =
+        selectedPixel >= 0 && selectedPixel < pixelCount.current ? (
+            <CurrentPixel account={pixels.current[selectedPixel].owner} coords={pixels.current[selectedPixel].coords} color={pixels.current[selectedPixel].color}></CurrentPixel>
+        ) : (
+            <CurrentPixel />
+        );
+
     return (
         <div className="mainPage">
-            <div className="sidebar">
-                <CurrentPixel account={account} coords="24" color={color}></CurrentPixel>
-            </div>
+            <div className="sidebar">{currPixel}</div>
 
             <div className="boardContainer">
                 <Board />

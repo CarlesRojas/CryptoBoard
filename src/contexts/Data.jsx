@@ -42,6 +42,8 @@ const DataProvider = ({ children }) => {
     const pixels = useRef([]);
     const coordsToRowCol = (coords) => (numRows < 0 ? null : { row: coords % numRows.current, col: Math.floor(coords / numRows.current) });
     const rowColToCoords = (row, col) => (numRows < 0 ? null : col * numRows.current + row);
+    const [selectedPixel, setSelectedPixel] = useState(-1);
+    const currSelectedPixel = useRef(-1);
 
     // COLOR PICKER
     const [color, setColor] = useState("#ffffff");
@@ -76,6 +78,9 @@ const DataProvider = ({ children }) => {
                 pixels,
                 coordsToRowCol,
                 rowColToCoords,
+                selectedPixel,
+                setSelectedPixel,
+                currSelectedPixel,
 
                 // COLOR PICKER
                 color,

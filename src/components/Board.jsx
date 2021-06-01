@@ -10,7 +10,7 @@ const PIXELS_PER_PIXEL = 20;
 
 export default function Board() {
     // Contexts
-    const { numRows, pixelCount, pixels, coordsToRowCol, useDarkMode } = useContext(Data);
+    const { numRows, pixelCount, pixels, coordsToRowCol, rowColToCoords, useDarkMode, setColor, setSelectedPixel, currSelectedPixel } = useContext(Data);
 
     // #################################################
     //   CANVAS
@@ -47,30 +47,50 @@ export default function Board() {
 
     // Select a pixel
     const selectPixel = (row, col) => {
+        // Get new pixel coords
+        const newSelectedPixel = rowColToCoords(row, col);
+
         // Clear canvas
         ctxSelect.current.clearRect(0, 0, Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL, numRows.current * PIXELS_PER_PIXEL);
 
-        // Highlight pixel outline black
-        ctxSelect.current.fillStyle = "black"; // getMostContrastedColor(currentPixelColor, "white", "black");
-        ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL, PIXELS_PER_PIXEL, 1);
-        ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL, 1, PIXELS_PER_PIXEL);
-        ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL - 1, PIXELS_PER_PIXEL, 1);
-        ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL, 1, PIXELS_PER_PIXEL);
+        // If clicked on the same pixel again, diselect it
+        if (currSelectedPixel.current === newSelectedPixel) {
+            // Unset the selected pixel
+            currSelectedPixel.current = -1;
+            setSelectedPixel(-1);
+        }
 
-        // Highlight pixel outline white
-        ctxSelect.current.fillStyle = "white";
-        ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL - 1, PIXELS_PER_PIXEL + 2, 1);
-        ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL - 1, 1, PIXELS_PER_PIXEL + 2);
-        ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL, PIXELS_PER_PIXEL + 2, 1);
-        ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL - 1, 1, PIXELS_PER_PIXEL + 2);
+        // Select pixel
+        else {
+            // Highlight pixel outline black
+            ctxSelect.current.fillStyle = "black"; // getMostContrastedColor(currentPixelColor, "white", "black");
+            ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL, PIXELS_PER_PIXEL, 1);
+            ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL, 1, PIXELS_PER_PIXEL);
+            ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL - 1, PIXELS_PER_PIXEL, 1);
+            ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL, 1, PIXELS_PER_PIXEL);
+
+            // Highlight pixel outline white
+            ctxSelect.current.fillStyle = "white";
+            ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL - 1, PIXELS_PER_PIXEL + 2, 1);
+            ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL - 1, 1, PIXELS_PER_PIXEL + 2);
+            ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL, PIXELS_PER_PIXEL + 2, 1);
+            ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL - 1, 1, PIXELS_PER_PIXEL + 2);
+
+            // Set the selected pixel
+            currSelectedPixel.current = newSelectedPixel;
+            setSelectedPixel(newSelectedPixel);
+
+            // Set the color
+            setColor(pixels.current[newSelectedPixel].color);
+        }
     };
 
     // On mouse move over the canvas
     const onCanvasMouseMove = (event) => {
         // Get row and col
         const pos = {
-            col: Math.max(0, Math.min(pixelCount.current / numRows.current - 1, Math.floor(event.offsetX / currPixelWidth.crrent))),
-            row: Math.max(0, Math.min(numRows.current - 1, Math.floor(event.offsetY / currPixelWidth.crrent))),
+            col: Math.max(0, Math.min(pixelCount.current / numRows.current - 1, Math.floor(event.offsetX / currPixelWidth.current))),
+            row: Math.max(0, Math.min(numRows.current - 1, Math.floor(event.offsetY / currPixelWidth.current))),
         };
 
         // Highlight pixel
@@ -87,8 +107,8 @@ export default function Board() {
     const onCanvasMouseUp = (event) => {
         // Get row and col
         const pos = {
-            col: Math.max(0, Math.min(pixelCount.current / numRows.current - 1, Math.floor(event.offsetX / currPixelWidth.crrent))),
-            row: Math.max(0, Math.min(numRows.current - 1, Math.floor(event.offsetY / currPixelWidth.crrent))),
+            col: Math.max(0, Math.min(pixelCount.current / numRows.current - 1, Math.floor(event.offsetX / currPixelWidth.current))),
+            row: Math.max(0, Math.min(numRows.current - 1, Math.floor(event.offsetY / currPixelWidth.current))),
         };
 
         // Highlight pixel
@@ -138,6 +158,9 @@ export default function Board() {
             canvasRef.current.style.width = `unset`;
             canvasHighlightRef.current.style.width = `unset`;
             canvasSelectRef.current.style.width = `unset`;
+
+            // Set current pixel width
+            currPixelWidth.current = canvasNewHeight / numRows.current;
         }
 
         // Scale to fit width
@@ -151,6 +174,9 @@ export default function Board() {
             canvasRef.current.style.width = `${canvasNewWidth}px`;
             canvasHighlightRef.current.style.width = `${canvasNewWidth}px`;
             canvasSelectRef.current.style.width = `${canvasNewWidth}px`;
+
+            // Set current pixel width
+            currPixelWidth.current = canvasNewWidth / Math.floor(pixelCount.current / numRows.current);
         }
     };
 
@@ -204,7 +230,7 @@ export default function Board() {
     return (
         <div className="board" ref={boardRef}>
             <div className={classNames("canvasContainer", { dark: useDarkMode })} ref={containerRef}>
-                <TransformWrapper pan={{ paddingSize: 0 }}>
+                <TransformWrapper pan={{ paddingSize: 0 }} doubleClick={{ mode: "reset" }}>
                     <TransformComponent>
                         <canvas
                             className="canvas"

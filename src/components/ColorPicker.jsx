@@ -9,7 +9,7 @@ import { Data } from "contexts/Data";
 export default function ColorPicker() {
     // Contexts
     const { hexToRgb, rgbToHex } = useContext(Utils);
-    const { setColor, useDarkMode } = useContext(Data);
+    const { color, setColor, useDarkMode } = useContext(Data);
 
     // #################################################
     //   INPUTS
@@ -86,6 +86,12 @@ export default function ColorPicker() {
 
         return isValid;
     };
+
+    // Update all when the final color is updated
+    useEffect(() => {
+        setValidColor(color);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [color]);
 
     // Update all when hex input is updated and valid
     useEffect(() => {
