@@ -30,8 +30,8 @@
 
 #### Mint
 
-await contract.mintBatch(25)
+`await contract.mintBatch([432, 34, 212144], ["#FF0000", "#00FF00", "#0000FF"])`
 
 #### Change Color
 
-`await contract.changeColor(0, #FF0000)`
+`await contract.changeColor(432, "#000000")`

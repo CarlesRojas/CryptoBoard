@@ -11,6 +11,7 @@ contract CryptoPlace is ERC721 {
     uint256 public numRows;
     uint256 public pixelCount;
     uint256 public pixelLimit;
+    uint256[] public mintedPixels;
     mapping(uint256 => Pixel) public pixels;
     address public owner = msg.sender;
 
@@ -32,17 +33,17 @@ contract CryptoPlace is ERC721 {
 
     // Constructor fuunction
     constructor() ERC721("Pixel", "PXL") {
-        numRows = 5;
-        pixelLimit = 25;
+        numRows = 512;
+        pixelLimit = 512 * 512;
     }
 
     // Create a new pixel
-    function mint(uint256 _coord, string memory _color) public onlyBy(owner) {
+    function mint(uint256 _coord, string memory _color) public {
         // Do not create if coordinate already exists
         require(!pixels[_coord].exists);
 
-        // Do not create more pixels than the max limit
-        require(pixelCount < pixelLimit);
+        // Coords can not be bigger than the pixel limit
+        require(_coord < pixelLimit);
 
         // Only accept valid colors
         require(isColor(_color));
@@ -53,17 +54,21 @@ contract CryptoPlace is ERC721 {
         // Mint pixel
         _mint(msg.sender, _coord);
 
+        // Add to minted pixels array
+        mintedPixels.push(_coord);
+
         // Save the pixel
         pixels[_coord] = Pixel(_coord, _color, payable(msg.sender), true);
     }
 
     // Mint a batch number of coordinates
-    function mintBatch(uint256 amount) public onlyBy(owner) {
-        uint256 currPixelCount = pixelCount;
+    function mintBatch(uint256[] memory coordsToMint, string[] memory colors) public onlyBy(owner) {
+        // The coords to mint array size has to match the color size
+        require(coordsToMint.length == colors.length);
 
-        // Mint the coordinates
-        for (uint256 i = currPixelCount; i < currPixelCount + amount; i++)
-            mint(i, "#FFFFFF");
+        for (uint i = 0; i < coordsToMint.length; i++) {
+            mint(coordsToMint[i], colors[i]);
+        }
     }
 
     // Change the color of a pixel

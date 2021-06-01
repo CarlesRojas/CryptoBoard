@@ -3,7 +3,6 @@ import { Redirect } from "react-router-dom";
 
 // Contexts
 import { Data } from "contexts/Data";
-//import { API } from "contexts/API";
 
 // Components
 import CurrentPixel from "components/CurrentPixel";
