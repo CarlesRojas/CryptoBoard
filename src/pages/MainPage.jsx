@@ -10,7 +10,7 @@ import Board from "components/Board";
 
 export default function MainPage() {
     // Contexts
-    const { loadingDone, pixelCount, pixels, color, selectedPixel } = useContext(Data);
+    const { loadingDone, pixelLimit, mintedPixels, pixels, color, selectedPixel, coordsToRowCol, getNotMintedColor } = useContext(Data);
 
     // #################################################
     //   REDIRECT LOGIC
@@ -29,13 +29,21 @@ export default function MainPage() {
     //   RENDER
     // #################################################
 
-    // Current pixel
-    const currPixel =
-        selectedPixel >= 0 && selectedPixel < pixelCount.current ? (
-            <CurrentPixel owner={pixels.current[selectedPixel].author} coords={parseInt(pixels.current[selectedPixel].coords)} color={color}></CurrentPixel>
-        ) : (
-            <CurrentPixel owner={null} coords={null} color={null}></CurrentPixel>
-        );
+    // Current pixel already minted
+    if (selectedPixel >= 0 && selectedPixel < pixelLimit.current && mintedPixels.current.includes(selectedPixel)) {
+        var currPixel = <CurrentPixel owner={pixels.current[selectedPixel].author} coords={selectedPixel} color={color}></CurrentPixel>;
+    }
+
+    // Current pixel not minted
+    else if (selectedPixel >= 0 && selectedPixel < pixelLimit.current) {
+        const rowCol = coordsToRowCol(selectedPixel);
+        currPixel = <CurrentPixel owner={null} coords={selectedPixel} color={getNotMintedColor(rowCol.row, rowCol.col)}></CurrentPixel>;
+    }
+
+    // No pixel selected
+    else {
+        currPixel = <CurrentPixel owner={null} coords={null} color={null}></CurrentPixel>;
+    }
 
     return (
         <div className="mainPage">

@@ -9,10 +9,12 @@ import { Data } from "contexts/Data";
 export const API = createContext();
 
 const APIProvider = ({ children }) => {
-    const { account, setAccount, networkID, networkInfo, contract, numRows, pixelCount, pixels } = useContext(Data);
+    const { account, setAccount, networkID, networkInfo, contract, numRows, pixelCount, pixelLimit, mintedPixels, pixels, setSelectedPixel, currSelectedPixel, setColor } = useContext(Data);
 
     // Load web3, the main eth account & the smart contract
     const load = async () => {
+        console.log("LOAD");
+
         try {
             if (window.ethereum) {
                 // Load Web3
@@ -50,8 +52,47 @@ const APIProvider = ({ children }) => {
         }
     };
 
+    // Mint a pixel
+    const mint = async (coords) => {
+        console.log("MINT PIXEL");
+
+        // Return if not a correct coord
+        if (typeof coords !== "number" || (coords < 0 && coords >= pixelLimit.current)) return;
+
+        try {
+            await contract.current.methods.mint(coords, "#ffffff").send({ from: account });
+
+            // Update minted pixels array
+            mintedPixels.current.push(coords);
+
+            // Update pixel
+            pixels.current[coords] = {
+                0: coords.toString(),
+                1: "#ffffff",
+                2: account,
+                3: true,
+                coords: coords.toString(),
+                color: "#ffffff",
+                author: account,
+                exists: true,
+            };
+
+            // Set selected pixel
+            setSelectedPixel(coords);
+            currSelectedPixel.current = coords;
+            setColor("#ffffff");
+
+            return true;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    };
+
     // Get the total number of rows
     const getNumRows = async () => {
+        console.log("GET NUM ROWS");
+
         // Return if the contract has not been loaded
         if (!contract.current) return;
 
@@ -59,7 +100,8 @@ const APIProvider = ({ children }) => {
         if (numRows.current >= 0) return numRows.current;
 
         try {
-            numRows.current = await contract.current.methods.numRows().call();
+            const result = await contract.current.methods.numRows().call();
+            numRows.current = parseInt(result);
             return numRows.current;
         } catch (error) {
             console.log(error);
@@ -68,6 +110,8 @@ const APIProvider = ({ children }) => {
 
     // Get the total number of pixels
     const getPixelCount = async () => {
+        console.log("GET PIXEL COUNT");
+
         // Return if the contract has not been loaded
         if (!contract.current) return;
 
@@ -86,20 +130,75 @@ const APIProvider = ({ children }) => {
         }
     };
 
-    // Get all the pixels
-    const getPixels = async () => {
+    // Get the limit number of pixels
+    const getPixelLimit = async () => {
+        console.log("GET PIXEL LIMIT");
+
         // Return if the contract has not been loaded
-        if (!contract.current) return [];
+        if (!contract.current) return;
+
+        // Return if we have already fetched it
+        if (pixelLimit.current >= 0) return pixelLimit.current;
+
+        try {
+            const value = await contract.current.methods.pixelLimit().call();
+            pixelLimit.current = parseInt(value);
+            return pixelLimit.current;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    // Get the coords of the minted pixels
+    const getMintedPixels = async () => {
+        console.log("GET MINTED PIXELS");
+
+        // Return if the contract has not been loaded
+        if (!contract.current) return;
+
+        // Return if we have already fetched it
+        if (mintedPixels.current !== null) return mintedPixels.current;
 
         // If we do not have the pixel count, get it
         if (pixelCount.current < 0) await getPixelCount();
 
         try {
+            // Save as numbers
+            mintedPixels.current = [];
+            for (let i = 0; i < pixelCount.current; i++) {
+                const value = await contract.current.methods.mintedPixels(i).call();
+                mintedPixels.current.push(parseInt(value));
+            }
+            return mintedPixels.current;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    // Get all the pixels
+    const getPixels = async () => {
+        console.log("GET PIXELS");
+
+        // Return if the contract has not been loaded
+        if (!contract.current) return [];
+
+        // Return if we have already fetched it
+        if (pixels.current !== null) return pixels.current;
+
+        // If we do not have the pixel count, get it
+        if (pixelLimit.current < 0) await getPixelLimit();
+
+        // If we do not have the minted pixels, get them
+        if (mintedPixels.current === null) await getMintedPixels();
+
+        try {
             // Load pixels
             pixels.current = [];
-            for (let i = 0; i < pixelCount.current; i++) {
-                const currPixel = await contract.current.methods.pixels(i).call();
-                pixels.current = [...pixels.current, currPixel];
+            for (let i = 0; i < pixelLimit.current; i++) {
+                if (mintedPixels.current.includes(i)) {
+                    const currPixel = await contract.current.methods.pixels(i).call();
+                    pixels.current.push(currPixel);
+                } else pixels.current.push(null);
             }
 
             return pixels.current;
@@ -110,6 +209,8 @@ const APIProvider = ({ children }) => {
 
     // Change color of a pixel
     const changePixelColor = async (coord, newColor) => {
+        console.log("CHANGE PIXEL COLOR");
+
         // Return if the contract has not been loaded
         if (!contract.current) return [];
 
@@ -136,8 +237,11 @@ const APIProvider = ({ children }) => {
         <API.Provider
             value={{
                 load,
+                mint,
                 getNumRows,
                 getPixelCount,
+                getPixelLimit,
+                getMintedPixels,
                 getPixels,
                 changePixelColor,
             }}

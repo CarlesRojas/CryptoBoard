@@ -10,7 +10,8 @@ const PIXELS_PER_PIXEL = 20;
 
 export default function Board() {
     // Contexts
-    const { numRows, pixelCount, pixels, coordsToRowCol, rowColToCoords, useDarkMode, color, setColor, setSelectedPixel, currSelectedPixel } = useContext(Data);
+    const { numRows, pixelLimit, mintedPixels, pixels, coordsToRowCol, rowColToCoords, useDarkMode, color, setColor, setSelectedPixel, currSelectedPixel, getNotMintedColor } =
+        useContext(Data);
 
     // #################################################
     //   CANVAS
@@ -19,6 +20,10 @@ export default function Board() {
     // Refs
     const boardRef = useRef(null);
     const containerRef = useRef(null);
+
+    // Canvas Size
+    const canvasWidth = Math.floor(pixelLimit.current / numRows.current) * PIXELS_PER_PIXEL;
+    const canvasHeight = numRows.current * PIXELS_PER_PIXEL;
 
     // Canvas refs
     const canvasRef = useRef(null);
@@ -46,15 +51,14 @@ export default function Board() {
 
     // Highlight a pixel
     const highlightPixel = (row, col) => {
-        // Clear canvas
-        ctxHighlight.current.clearRect(0, 0, Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL, numRows.current * PIXELS_PER_PIXEL);
-
-        // Highlight pixel outline black
-        ctxHighlight.current.fillStyle = "black"; // getMostContrastedColor(currentPixelColor, "white", "black");
-        ctxHighlight.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL, PIXELS_PER_PIXEL, 1);
-        ctxHighlight.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL, 1, PIXELS_PER_PIXEL);
-        ctxHighlight.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL - 1, PIXELS_PER_PIXEL, 1);
-        ctxHighlight.current.fillRect(col * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL, 1, PIXELS_PER_PIXEL);
+        // // Clear canvas
+        // ctxHighlight.current.clearRect(0, 0, canvasWidth, canvasHeight);
+        // // Highlight pixel outline black
+        // ctxHighlight.current.fillStyle = "black"; // getMostContrastedColor(currentPixelColor, "white", "black");
+        // ctxHighlight.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL, PIXELS_PER_PIXEL, 1);
+        // ctxHighlight.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL, 1, PIXELS_PER_PIXEL);
+        // ctxHighlight.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL - 1, PIXELS_PER_PIXEL, 1);
+        // ctxHighlight.current.fillRect(col * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL, 1, PIXELS_PER_PIXEL);
     };
 
     // Select a pixel
@@ -63,8 +67,8 @@ export default function Board() {
         const newSelectedPixel = rowColToCoords(row, col);
 
         // Clear canvases
-        ctxColor.current.clearRect(0, 0, Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL, numRows.current * PIXELS_PER_PIXEL);
-        ctxSelect.current.clearRect(0, 0, Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL, numRows.current * PIXELS_PER_PIXEL);
+        ctxColor.current.clearRect(0, 0, canvasWidth, canvasHeight);
+        // ctxSelect.current.clearRect(0, 0, canvasWidth, canvasHeight);
 
         // If clicked on the same pixel again, diselect it
         if (currSelectedPixel.current === newSelectedPixel) {
@@ -75,26 +79,27 @@ export default function Board() {
 
         // Select pixel
         else {
-            // Highlight pixel outline black
-            ctxSelect.current.fillStyle = "black"; // getMostContrastedColor(currentPixelColor, "white", "black");
-            ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL, PIXELS_PER_PIXEL, 1);
-            ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL, 1, PIXELS_PER_PIXEL);
-            ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL - 1, PIXELS_PER_PIXEL, 1);
-            ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL, 1, PIXELS_PER_PIXEL);
+            // // Highlight pixel outline black
+            // ctxSelect.current.fillStyle = "black"; // getMostContrastedColor(currentPixelColor, "white", "black");
+            // ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL, PIXELS_PER_PIXEL, 1);
+            // ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL, 1, PIXELS_PER_PIXEL);
+            // ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL - 1, PIXELS_PER_PIXEL, 1);
+            // ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL, 1, PIXELS_PER_PIXEL);
 
-            // Highlight pixel outline white
-            ctxSelect.current.fillStyle = "white";
-            ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL - 1, PIXELS_PER_PIXEL + 2, 1);
-            ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL - 1, 1, PIXELS_PER_PIXEL + 2);
-            ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL, PIXELS_PER_PIXEL + 2, 1);
-            ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL - 1, 1, PIXELS_PER_PIXEL + 2);
+            // // Highlight pixel outline white
+            // ctxSelect.current.fillStyle = "white";
+            // ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL - 1, PIXELS_PER_PIXEL + 2, 1);
+            // ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL - 1, 1, PIXELS_PER_PIXEL + 2);
+            // ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL, PIXELS_PER_PIXEL + 2, 1);
+            // ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL - 1, 1, PIXELS_PER_PIXEL + 2);
 
             // Set the selected pixel
             currSelectedPixel.current = newSelectedPixel;
             setSelectedPixel(newSelectedPixel);
 
             // Set the color
-            setColor(pixels.current[newSelectedPixel].color.toLowerCase());
+            if (mintedPixels.current.includes(newSelectedPixel)) setColor(pixels.current[newSelectedPixel].color.toLowerCase());
+            else setColor(getNotMintedColor(row, col));
         }
     };
 
@@ -102,7 +107,7 @@ export default function Board() {
     const onCanvasMouseMove = (event) => {
         // Get row and col
         const pos = {
-            col: Math.max(0, Math.min(pixelCount.current / numRows.current - 1, Math.floor(event.offsetX / currPixelWidth.current))),
+            col: Math.max(0, Math.min(pixelLimit.current / numRows.current - 1, Math.floor(event.offsetX / currPixelWidth.current))),
             row: Math.max(0, Math.min(numRows.current - 1, Math.floor(event.offsetY / currPixelWidth.current))),
         };
 
@@ -113,14 +118,14 @@ export default function Board() {
     // On mouse leave the canvas
     const onCanvasMouseLeave = () => {
         // Clear the highlight canvas
-        ctxHighlight.current.clearRect(0, 0, Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL, numRows.current * PIXELS_PER_PIXEL);
+        ctxHighlight.current.clearRect(0, 0, canvasWidth, canvasHeight);
     };
 
     // On mouse release over the canvas
     const onCanvasMouseUp = (event) => {
         // Get row and col
         const pos = {
-            col: Math.max(0, Math.min(pixelCount.current / numRows.current - 1, Math.floor(event.offsetX / currPixelWidth.current))),
+            col: Math.max(0, Math.min(pixelLimit.current / numRows.current - 1, Math.floor(event.offsetX / currPixelWidth.current))),
             row: Math.max(0, Math.min(numRows.current - 1, Math.floor(event.offsetY / currPixelWidth.current))),
         };
 
@@ -139,7 +144,7 @@ export default function Board() {
 
     // Paint provisional color when it is updated in the color picker
     useEffect(() => {
-        if (currSelectedPixel.current >= 0 && currSelectedPixel.current <= pixelCount.current) {
+        if (currSelectedPixel.current >= 0 && currSelectedPixel.current <= pixelLimit.current) {
             // Get row and col
             const coords = coordsToRowCol(currSelectedPixel.current);
             paintProvisionalPixel(coords.row, coords.col, color);
@@ -211,7 +216,7 @@ export default function Board() {
             canvasSelectRef.current.style.width = `${canvasNewWidth}px`;
 
             // Set current pixel width
-            currPixelWidth.current = canvasNewWidth / Math.floor(pixelCount.current / numRows.current);
+            currPixelWidth.current = canvasNewWidth / Math.floor(pixelLimit.current / numRows.current);
         }
     };
 
@@ -240,12 +245,21 @@ export default function Board() {
         ctxHighlight.current = canvasHighlightRef.current.getContext("2d");
         ctxSelect.current = canvasSelectRef.current.getContext("2d");
 
+        // Paint the canvas with the not minted colors
+        for (let i = 0; i < pixelLimit.current; i++) {
+            // Get pixel info
+            const rowCol = coordsToRowCol(i);
+            paintPixel(rowCol.row, rowCol.col, getNotMintedColor(rowCol.row, rowCol.col));
+        }
+
         // Paint canvas with pixels
-        for (const pixel of pixels.current) {
-            const coords = coordsToRowCol(pixel.coords);
+        for (const coords of mintedPixels.current) {
+            // Get pixel info
+            const rowCol = coordsToRowCol(coords);
+            const pixelInfo = pixels.current[coords];
 
             // Fill pixels
-            paintPixel(coords.row, coords.col, pixel.color);
+            paintPixel(rowCol.row, rowCol.col, pixelInfo.color);
         }
 
         return () => {
@@ -272,33 +286,13 @@ export default function Board() {
             <div className={classNames("canvasContainer", { dark: useDarkMode })} ref={containerRef}>
                 <TransformWrapper pan={{ paddingSize: 0 }} doubleClick={{ mode: "reset" }}>
                     <TransformComponent>
-                        <canvas
-                            className="canvas"
-                            width={Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL}
-                            height={numRows.current * PIXELS_PER_PIXEL}
-                            ref={canvasRef}
-                        ></canvas>
+                        <canvas className="canvas" width={canvasWidth} height={canvasHeight} ref={canvasRef}></canvas>
 
-                        <canvas
-                            className="canvas overlay"
-                            width={Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL}
-                            height={numRows.current * PIXELS_PER_PIXEL}
-                            ref={canvasColorRef}
-                        ></canvas>
+                        <canvas className="canvas overlay" width={canvasWidth} height={canvasHeight} ref={canvasColorRef}></canvas>
 
-                        <canvas
-                            className="canvas overlay"
-                            width={Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL}
-                            height={numRows.current * PIXELS_PER_PIXEL}
-                            ref={canvasSelectRef}
-                        ></canvas>
+                        <canvas className="canvas overlay" width={canvasWidth} height={canvasHeight} ref={canvasSelectRef}></canvas>
 
-                        <canvas
-                            className="canvas overlay"
-                            width={Math.floor(pixelCount.current / numRows.current) * PIXELS_PER_PIXEL}
-                            height={numRows.current * PIXELS_PER_PIXEL}
-                            ref={canvasHighlightRef}
-                        ></canvas>
+                        <canvas className="canvas overlay" width={canvasWidth} height={canvasHeight} ref={canvasHighlightRef}></canvas>
                     </TransformComponent>
                 </TransformWrapper>
             </div>

@@ -39,7 +39,9 @@ const DataProvider = ({ children }) => {
     // PIXELS INFO
     const numRows = useRef(-1);
     const pixelCount = useRef(-1);
-    const pixels = useRef([]);
+    const pixelLimit = useRef(-1);
+    const mintedPixels = useRef(null);
+    const pixels = useRef(null);
     const coordsToRowCol = (coords) => (numRows < 0 ? null : { row: coords % numRows.current, col: Math.floor(coords / numRows.current) });
     const rowColToCoords = (row, col) => (numRows < 0 ? null : col * numRows.current + row);
     const [selectedPixel, setSelectedPixel] = useState(-1);
@@ -47,6 +49,7 @@ const DataProvider = ({ children }) => {
 
     // COLOR PICKER
     const [color, setColor] = useState("#ffffff");
+    const getNotMintedColor = (row, col) => ((row + col) % 2 === 0 ? "#ededed" : "#e5e5e5");
 
     // #################################################
     //   PROVIDE DATA
@@ -75,6 +78,8 @@ const DataProvider = ({ children }) => {
                 // PIXELS INFO
                 numRows,
                 pixelCount,
+                pixelLimit,
+                mintedPixels,
                 pixels,
                 coordsToRowCol,
                 rowColToCoords,
@@ -85,6 +90,7 @@ const DataProvider = ({ children }) => {
                 // COLOR PICKER
                 color,
                 setColor,
+                getNotMintedColor,
             }}
         >
             {children}

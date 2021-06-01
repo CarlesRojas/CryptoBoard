@@ -33,8 +33,8 @@ contract CryptoPlace is ERC721 {
 
     // Constructor fuunction
     constructor() ERC721("Pixel", "PXL") {
-        numRows = 512;
-        pixelLimit = 512 * 512;
+        numRows = 256;
+        pixelLimit = 256 * 256;
     }
 
     // Create a new pixel
@@ -62,11 +62,14 @@ contract CryptoPlace is ERC721 {
     }
 
     // Mint a batch number of coordinates
-    function mintBatch(uint256[] memory coordsToMint, string[] memory colors) public onlyBy(owner) {
+    function mintBatch(uint256[] memory coordsToMint, string[] memory colors)
+        public
+        onlyBy(owner)
+    {
         // The coords to mint array size has to match the color size
         require(coordsToMint.length == colors.length);
 
-        for (uint i = 0; i < coordsToMint.length; i++) {
+        for (uint256 i = 0; i < coordsToMint.length; i++) {
             mint(coordsToMint[i], colors[i]);
         }
     }

@@ -7,7 +7,7 @@ import { Data } from "contexts/Data";
 
 export default function LoadingPage() {
     // Contexts
-    const { load, getPixels } = useContext(API);
+    const { load, getNumRows, getPixelCount, getPixelLimit, getMintedPixels, getPixels } = useContext(API);
     const { errorType, loadingDone } = useContext(Data);
 
     // #################################################
@@ -29,6 +29,10 @@ export default function LoadingPage() {
             // Change page
             if (result === "success") {
                 // Load the pixels
+                await getNumRows();
+                await getPixelCount();
+                await getPixelLimit();
+                await getMintedPixels();
                 await getPixels();
 
                 setRedirectTo("/main");
