@@ -28,6 +28,8 @@ $navBarHeightMobile: 2.5rem;
 $tabletWidth: 1100px;
 $mobileWidth: 768px;
 
+$verticalSpace: 1rem;
+
 // #######################################
 //      MIXINS
 // #######################################
@@ -246,6 +248,30 @@ input[type="number"] {
         position: relative;
         height: 100%;
         width: 22rem;
+        display: flex;
+        flex-direction: column;
+
+        .section {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: calc(100% - 1rem);
+            overflow: visible;
+            margin: 0.5rem;
+            padding: 0.5rem;
+            @include border-radius(8px);
+            @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
+
+            @media only screen and (min-width: $mobileWidth) {
+                width: calc(100% - 2rem);
+                margin: 1rem;
+            }
+
+            &.dark {
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+        }
     }
 
     .boardContainer {
@@ -361,7 +387,6 @@ input[type="number"] {
         .handle {
             pointer-events: none;
             position: absolute;
-            transition: left 0.2s ease-in-out;
             height: 1.5rem;
             max-height: 1.5rem;
             min-height: 1.5rem;
@@ -369,6 +394,7 @@ input[type="number"] {
             max-width: 1.5rem;
             min-width: 1.5rem;
             left: 0rem;
+            @include transition(left 0.2s ease-in-out);
             @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
             @include border-radius(100vw);
 
@@ -468,446 +494,6 @@ input[type="number"] {
             @media only screen and (min-width: $mobileWidth) {
                 @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
                 @include border-radius(8px);
-            }
-        }
-    }
-}
-
-// #######################################
-//      CURRENT PIXEL
-// #######################################
-
-.currentPixel {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 23rem;
-    width: calc(100% - 1rem);
-    overflow: visible;
-    margin: 1rem 0.5rem 0.5rem;
-    padding: 0.5rem;
-    @include border-radius(8px);
-    @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
-
-    @media only screen and (min-width: $mobileWidth) {
-        height: 30rem;
-    }
-
-    &.dark {
-        background-color: rgba(255, 255, 255, 0.05);
-    }
-
-    .title {
-        width: 100%;
-        padding-bottom: 0.3rem;
-        font-size: 0.9rem;
-        font-weight: 800;
-        text-align: center;
-
-        @media only screen and (min-width: $mobileWidth) {
-            padding-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-    }
-
-    .main {
-        display: flex;
-        width: 100%;
-        margin-bottom: 0.5rem;
-
-        .color {
-            height: 3.5rem;
-            max-height: 3.5rem;
-            min-height: 3.5rem;
-            width: 3.5rem;
-            max-width: 3.5rem;
-            min-width: 3.5rem;
-            margin: 0.3rem;
-            @include border-radius(8px);
-            @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
-
-            @media only screen and (min-width: $mobileWidth) {
-                height: 4rem;
-                max-height: 4rem;
-                min-height: 4rem;
-                width: 4rem;
-                max-width: 4rem;
-                min-width: 4rem;
-                margin: 0.5rem;
-            }
-
-            &.dark {
-                background-color: rgba(255, 255, 255, 0.05);
-            }
-        }
-
-        .info {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            justify-content: center;
-            height: 3.5rem;
-            max-height: 3.5rem;
-            min-height: 3.5rem;
-            width: 100%;
-            margin: 0.3rem;
-
-            @media only screen and (min-width: $mobileWidth) {
-                height: 4rem;
-                max-height: 4rem;
-                min-height: 4rem;
-                margin: 0.5rem;
-            }
-
-            .row {
-                display: flex;
-                align-items: baseline;
-                width: 100%;
-                margin: 0;
-
-                .name {
-                    width: 2rem;
-                    opacity: 0.5;
-                    padding-right: 0.5rem;
-                    font-size: 0.5rem;
-                    font-weight: 700;
-                    text-align: right;
-
-                    @media only screen and (min-width: $mobileWidth) {
-                        font-size: 0.6rem;
-                    }
-                }
-
-                .coord {
-                    font-size: 1.1rem;
-                    font-weight: 800;
-
-                    @media only screen and (min-width: $mobileWidth) {
-                        font-size: 1.3rem;
-                    }
-
-                    &.first {
-                        padding-right: 0.6rem;
-                    }
-                }
-            }
-        }
-    }
-
-    .account {
-        height: 1.2rem;
-        width: 100%;
-        max-width: 100%;
-        min-width: 100%;
-        cursor: pointer;
-        opacity: 0.5;
-        padding: 0 0.5rem;
-        font-size: 0.6rem;
-        font-weight: 400;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-
-        @media only screen and (min-width: $mobileWidth) {
-            height: 1.4rem;
-            font-size: 0.7rem;
-        }
-    }
-
-    .lower {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        height: 2rem;
-        width: 100%;
-        overflow: visible;
-
-        @media only screen and (min-width: $mobileWidth) {
-            height: 3rem;
-        }
-
-        .button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s ease-in-out;
-            transform: scale(1);
-            height: calc(2rem - 0.5rem);
-            width: 40%;
-            cursor: pointer;
-            margin: 0.2rem;
-            font-size: 0.7rem;
-            font-weight: 800;
-            text-align: center;
-            @include border-radius(100vw);
-            @include box-shadow(0 0 4px rgba(0, 0, 0, 0.2));
-
-            @media only screen and (min-width: $mobileWidth) {
-                height: calc(3rem - 0.6rem);
-                width: 50%;
-                margin: 0.25rem;
-                font-size: 0.9rem;
-            }
-
-            &:hover {
-                @media only screen and (min-width: $mobileWidth) {
-                    transform: scale(1.05);
-                }
-            }
-
-            &.dark {
-                background-color: rgba(255, 255, 255, 0.08);
-            }
-
-            &.icon {
-                height: calc(2rem - 0.5rem);
-                max-height: calc(2rem - 0.5rem);
-                min-height: calc(2rem - 0.5rem);
-                width: calc(2rem - 0.5rem);
-                max-width: calc(2rem - 0.5rem);
-                min-width: calc(2rem - 0.5rem);
-                margin-left: 1rem;
-
-                @media only screen and (min-width: $mobileWidth) {
-                    height: calc(3rem - 0.6rem);
-                    max-height: calc(3rem - 0.6rem);
-                    min-height: calc(3rem - 0.6rem);
-                    width: calc(3rem - 0.6rem);
-                    max-width: calc(3rem - 0.6rem);
-                    min-width: calc(3rem - 0.6rem);
-                }
-            }
-
-            .undoIcon {
-                pointer-events: none;
-                height: 0.8rem;
-                max-height: 0.8rem;
-                min-height: 0.8rem;
-                width: 0.8rem;
-                max-width: 0.8rem;
-                min-width: 0.8rem;
-                color: $text;
-                opacity: 0.5;
-
-                @media only screen and (min-width: $mobileWidth) {
-                    height: 1rem;
-                    max-height: 1rem;
-                    min-height: 1rem;
-                    width: 1rem;
-                    max-width: 1rem;
-                    min-width: 1rem;
-                }
-
-                &.dark {
-                    color: $textDark;
-                }
-            }
-
-            .loadingIcon {
-                pointer-events: none;
-                height: 1rem;
-                max-height: 1rem;
-                min-height: 1rem;
-                width: 1rem;
-                max-width: 1rem;
-                min-width: 1rem;
-                color: $text;
-                opacity: 0.5;
-                @include animation(rotation 2s infinite linear);
-
-                @media only screen and (min-width: $mobileWidth) {
-                    height: 1.2rem;
-                    max-height: 1.2rem;
-                    min-height: 1.2rem;
-                    width: 1.2rem;
-                    max-width: 1.2rem;
-                    min-width: 1.2rem;
-                }
-
-                @keyframes rotation {
-                    from {
-                        transform: rotate(0deg);
-                    }
-                    to {
-                        transform: rotate(359deg);
-                    }
-                }
-
-                &.dark {
-                    color: $textDark;
-                }
-            }
-        }
-
-        .message {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            max-width: 100%;
-            min-width: 100%;
-            opacity: 0.5;
-            padding: 0 0.5rem;
-            font-size: 0.7rem;
-            font-weight: 500;
-            text-align: center;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-
-            @media only screen and (min-width: $mobileWidth) {
-                font-size: 0.8rem;
-            }
-
-            &.error {
-                color: rgba(255, 0, 0, 0.829);
-                opacity: 0.9;
-                font-size: 0.9rem;
-                font-weight: 800;
-
-                @media only screen and (min-width: $mobileWidth) {
-                    font-size: 1rem;
-                }
-            }
-
-            &.big {
-                font-size: 0.8rem;
-                font-weight: 800;
-                padding: 0.3rem 0;
-
-                @media only screen and (min-width: $mobileWidth) {
-                    font-size: 0.9rem;
-                }
-            }
-        }
-    }
-
-    .mint {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        overflow: visible;
-        flex-grow: 1;
-
-        .message {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            max-width: 100%;
-            min-width: 100%;
-            opacity: 0.5;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-align: center;
-            padding: 0.3rem 0;
-
-            &.small {
-                font-size: 0.7rem;
-                opacity: 0.3;
-                padding: 0 0 0.2rem 0;
-                margin-bottom: 1rem;
-
-                @media only screen and (min-width: $mobileWidth) {
-                    font-size: 0.8rem;
-                }
-            }
-
-            @media only screen and (min-width: $mobileWidth) {
-                font-size: 0.9rem;
-            }
-        }
-
-        .money {
-            display: flex;
-            justify-content: center;
-            align-items: baseline;
-            width: 100%;
-            margin: 0.5rem 0 0;
-
-            .value {
-                opacity: 1;
-                font-size: 3rem;
-                font-weight: 700;
-                margin-right: 0.2rem;
-            }
-
-            .unit {
-                opacity: 0.5;
-                font-size: 0.7rem;
-                font-weight: 700;
-            }
-        }
-
-        .button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s ease-in-out;
-            transform: scale(1);
-            height: calc(2rem - 0.5rem);
-            width: 40%;
-            cursor: pointer;
-            margin: 0.2rem;
-            font-size: 0.7rem;
-            font-weight: 800;
-            text-align: center;
-            @include border-radius(100vw);
-            @include box-shadow(0 0 4px rgba(0, 0, 0, 0.2));
-
-            @media only screen and (min-width: $mobileWidth) {
-                height: calc(3rem - 0.6rem);
-                width: 50%;
-                margin: 0.25rem;
-                font-size: 0.9rem;
-            }
-
-            &:hover {
-                @media only screen and (min-width: $mobileWidth) {
-                    transform: scale(1.05);
-                }
-            }
-
-            &.dark {
-                background-color: rgba(255, 255, 255, 0.08);
-            }
-
-            .loadingIcon {
-                pointer-events: none;
-                height: 1rem;
-                max-height: 1rem;
-                min-height: 1rem;
-                width: 1rem;
-                max-width: 1rem;
-                min-width: 1rem;
-                color: $text;
-                opacity: 0.5;
-                @include animation(rotation 2s infinite linear);
-
-                @media only screen and (min-width: $mobileWidth) {
-                    height: 1.2rem;
-                    max-height: 1.2rem;
-                    min-height: 1.2rem;
-                    width: 1.2rem;
-                    max-width: 1.2rem;
-                    min-width: 1.2rem;
-                }
-
-                @keyframes rotation {
-                    from {
-                        transform: rotate(0deg);
-                    }
-                    to {
-                        transform: rotate(359deg);
-                    }
-                }
-
-                &.dark {
-                    color: $textDark;
-                }
             }
         }
     }
@@ -1075,6 +661,550 @@ input[type="number"] {
                 position: absolute;
                 right: 0;
                 left: 0;
+            }
+        }
+    }
+}
+
+// #######################################
+//      PIXEL
+// #######################################
+
+.pixel {
+    display: flex;
+    width: 100%;
+    overflow: visible;
+
+    @media only screen and (min-width: $mobileWidth) {
+    }
+
+    .color {
+        height: 3.5rem;
+        max-height: 3.5rem;
+        min-height: 3.5rem;
+        width: 3.5rem;
+        max-width: 3.5rem;
+        min-width: 3.5rem;
+        margin: 0.25rem;
+        cursor: pointer;
+        @include border-radius(8px);
+        @include box-shadow(0 0 0.25rem rgba(0, 0, 0, 0.2));
+
+        @media only screen and (min-width: $mobileWidth) {
+            height: 4rem;
+            max-height: 4rem;
+            min-height: 4rem;
+            width: 4rem;
+            max-width: 4rem;
+            min-width: 4rem;
+            margin: 0.5rem;
+            @include box-shadow(0 0 0.5rem rgba(0, 0, 0, 0.2));
+        }
+
+        &.dark {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+    }
+
+    .info {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        justify-content: center;
+        height: 3.5rem;
+        max-height: 3.5rem;
+        min-height: 3.5rem;
+        margin: 0.3rem;
+
+        @media only screen and (min-width: $mobileWidth) {
+            height: 4rem;
+            max-height: 4rem;
+            min-height: 4rem;
+            margin: 0.5rem;
+        }
+
+        .row {
+            display: flex;
+            align-items: baseline;
+            width: 100%;
+            margin: 0;
+
+            .name {
+                width: 2rem;
+                opacity: 0.5;
+                padding-right: 0.5rem;
+                font-size: 0.5rem;
+                font-weight: 700;
+                text-align: right;
+
+                @media only screen and (min-width: $mobileWidth) {
+                    font-size: 0.6rem;
+                }
+            }
+
+            .coord {
+                font-size: 1.1rem;
+                font-weight: 800;
+
+                @media only screen and (min-width: $mobileWidth) {
+                    font-size: 1.3rem;
+                }
+
+                &.first {
+                    padding-right: 0.6rem;
+                }
+            }
+        }
+    }
+
+    .directionalPad {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        transform: rotate(45deg);
+        height: 3rem;
+        max-height: 3rem;
+        min-height: 3rem;
+        width: 3rem;
+        max-width: 3rem;
+        min-width: 3rem;
+        overflow: visible;
+        margin: 0.5rem;
+
+        @media only screen and (min-width: $mobileWidth) {
+            height: 3rem;
+            max-height: 3rem;
+            min-height: 3rem;
+            width: 3rem;
+            max-width: 3rem;
+            min-width: 3rem;
+            margin: 1rem;
+        }
+
+        .iconContainer {
+            position: relative;
+            height: calc(100% - 0.4rem);
+            max-height: calc(100% - 0.4rem);
+            min-height: calc(100% - 0.4rem);
+            width: calc(100% - 0.4rem);
+            max-width: calc(100% - 0.4rem);
+            min-width: calc(100% - 0.4rem);
+            margin: 0.2rem;
+            opacity: 0.5;
+            cursor: pointer;
+
+            &:hover {
+                @media only screen and (min-width: $mobileWidth) {
+                    opacity: 0.75;
+                }
+            }
+
+            &:active {
+                @media only screen and (min-width: $mobileWidth) {
+                    opacity: 1;
+                }
+            }
+
+            .icon {
+                height: 100%;
+                max-height: 100%;
+                min-height: 100%;
+                width: 100%;
+                max-width: 100%;
+                min-width: 100%;
+                color: $text;
+                opacity: 0.4;
+
+                &.dark {
+                    color: $textDark;
+                    opacity: 0.3;
+                }
+
+                &.up {
+                    transform: rotate(-90deg);
+                }
+
+                &.down {
+                    transform: rotate(90deg);
+                }
+
+                &.left {
+                    transform: rotate(180deg);
+                }
+            }
+        }
+    }
+}
+
+// #######################################
+//      SECTION CONTENT
+// #######################################
+
+.sectionContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .space {
+        width: 100%;
+        height: $verticalSpace;
+    }
+
+    .title {
+        width: 100%;
+        font-size: 0.8rem;
+        font-weight: 800;
+        text-align: center;
+        padding: 0.1rem 0;
+
+        @media only screen and (min-width: $mobileWidth) {
+            padding: 0.3rem 0;
+            font-size: 1.1rem;
+        }
+    }
+
+    .account {
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
+        cursor: pointer;
+        opacity: 0.5;
+        font-size: 0.6rem;
+        font-weight: 400;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: center;
+
+        @media only screen and (min-width: $mobileWidth) {
+            height: 1.4rem;
+            font-size: 0.7rem;
+        }
+    }
+
+    .message {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: calc(100% - 1rem);
+        max-width: calc(100% - 1rem);
+        min-width: calc(100% - 1rem);
+        opacity: 0.5;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-align: center;
+        margin: 0.2rem 0.5rem;
+
+        @media only screen and (min-width: $mobileWidth) {
+            font-size: 0.9rem;
+        }
+
+        &.dark {
+            font-weight: 500;
+        }
+
+        &.error {
+            color: rgba(255, 0, 0, 0.829);
+            opacity: 0.9;
+            font-size: 0.9rem;
+            font-weight: 800;
+
+            @media only screen and (min-width: $mobileWidth) {
+                font-size: 1rem;
+            }
+        }
+
+        &.small {
+            opacity: 0.3;
+            font-size: 0.7rem;
+
+            @media only screen and (min-width: $mobileWidth) {
+                font-size: 0.8rem;
+            }
+        }
+    }
+
+    .money {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        width: 100%;
+
+        .value {
+            opacity: 1;
+            margin-right: 0.2rem;
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        .unit {
+            opacity: 0.5;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+    }
+
+    .buttonsContainer {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        height: fit-content;
+        overflow: visible;
+    }
+
+    .button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform: scale(1);
+        height: 2rem;
+        width: 40%;
+        cursor: pointer;
+        font-size: 0.7rem;
+        font-weight: 800;
+        text-align: center;
+        @include transition(transform 0.2s ease-in-out);
+        @include border-radius(100vw);
+        @include box-shadow(0 0 4px rgba(0, 0, 0, 0.2));
+
+        @media only screen and (min-width: $mobileWidth) {
+            height: 2.5rem;
+            width: 50%;
+            font-size: 0.9rem;
+        }
+
+        &:hover {
+            @media only screen and (min-width: $mobileWidth) {
+                transform: scale(1.05);
+            }
+        }
+
+        &.dark {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        &.icon {
+            height: calc(2rem - 0.5rem);
+            max-height: calc(2rem - 0.5rem);
+            min-height: calc(2rem - 0.5rem);
+            width: calc(2rem - 0.5rem);
+            max-width: calc(2rem - 0.5rem);
+            min-width: calc(2rem - 0.5rem);
+            margin-left: 1rem;
+
+            @media only screen and (min-width: $mobileWidth) {
+                height: calc(3rem - 0.6rem);
+                max-height: calc(3rem - 0.6rem);
+                min-height: calc(3rem - 0.6rem);
+                width: calc(3rem - 0.6rem);
+                max-width: calc(3rem - 0.6rem);
+                min-width: calc(3rem - 0.6rem);
+            }
+        }
+
+        .undoIcon {
+            pointer-events: none;
+            height: 0.8rem;
+            max-height: 0.8rem;
+            min-height: 0.8rem;
+            width: 0.8rem;
+            max-width: 0.8rem;
+            min-width: 0.8rem;
+            color: $text;
+            opacity: 0.5;
+
+            @media only screen and (min-width: $mobileWidth) {
+                height: 1rem;
+                max-height: 1rem;
+                min-height: 1rem;
+                width: 1rem;
+                max-width: 1rem;
+                min-width: 1rem;
+            }
+
+            &.dark {
+                color: $textDark;
+            }
+        }
+
+        .loadingIcon {
+            pointer-events: none;
+            height: 1rem;
+            max-height: 1rem;
+            min-height: 1rem;
+            width: 1rem;
+            max-width: 1rem;
+            min-width: 1rem;
+            color: $text;
+            opacity: 0.5;
+            @include animation(rotation 2s infinite linear);
+
+            @media only screen and (min-width: $mobileWidth) {
+                height: 1.2rem;
+                max-height: 1.2rem;
+                min-height: 1.2rem;
+                width: 1.2rem;
+                max-width: 1.2rem;
+                min-width: 1.2rem;
+            }
+
+            @keyframes rotation {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(359deg);
+                }
+            }
+
+            &.dark {
+                color: $textDark;
+            }
+        }
+    }
+}
+
+.currentPixel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 23rem;
+    width: calc(100% - 1rem);
+    overflow: visible;
+    margin: 1rem 0.5rem 0.5rem;
+    padding: 0.5rem;
+    @include border-radius(8px);
+    @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
+
+    @media only screen and (min-width: $mobileWidth) {
+        height: 30rem;
+    }
+
+    &.dark {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .lower {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        height: 2rem;
+        width: 100%;
+        overflow: visible;
+
+        @media only screen and (min-width: $mobileWidth) {
+            height: 3rem;
+        }
+    }
+
+    .mint {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        overflow: visible;
+
+        .message {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 100%;
+            min-width: 100%;
+            opacity: 0.5;
+            padding: 0.3rem 0;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-align: center;
+
+            @media only screen and (min-width: $mobileWidth) {
+                font-size: 0.9rem;
+            }
+
+            &.small {
+                opacity: 0.3;
+                margin-bottom: 1rem;
+                padding: 0 0 0.2rem 0;
+                font-size: 0.7rem;
+
+                @media only screen and (min-width: $mobileWidth) {
+                    font-size: 0.8rem;
+                }
+            }
+        }
+
+        .button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: scale(1);
+            height: calc(2rem - 0.5rem);
+            width: 40%;
+            cursor: pointer;
+            margin: 0.2rem;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-align: center;
+            @include transition(transform 0.2s ease-in-out);
+            @include border-radius(100vw);
+            @include box-shadow(0 0 4px rgba(0, 0, 0, 0.2));
+
+            @media only screen and (min-width: $mobileWidth) {
+                height: calc(3rem - 0.6rem);
+                width: 50%;
+                margin: 0.25rem;
+                font-size: 0.9rem;
+            }
+
+            &:hover {
+                @media only screen and (min-width: $mobileWidth) {
+                    transform: scale(1.05);
+                }
+            }
+
+            &.dark {
+                background-color: rgba(255, 255, 255, 0.08);
+            }
+
+            .loadingIcon {
+                pointer-events: none;
+                height: 1rem;
+                max-height: 1rem;
+                min-height: 1rem;
+                width: 1rem;
+                max-width: 1rem;
+                min-width: 1rem;
+                color: $text;
+                opacity: 0.5;
+                @include animation(rotation 2s infinite linear);
+
+                @media only screen and (min-width: $mobileWidth) {
+                    height: 1.2rem;
+                    max-height: 1.2rem;
+                    min-height: 1.2rem;
+                    width: 1.2rem;
+                    max-width: 1.2rem;
+                    min-width: 1.2rem;
+                }
+
+                @keyframes rotation {
+                    from {
+                        transform: rotate(0deg);
+                    }
+                    to {
+                        transform: rotate(359deg);
+                    }
+                }
+
+                &.dark {
+                    color: $textDark;
+                }
             }
         }
     }

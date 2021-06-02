@@ -10,7 +10,8 @@ const PIXELS_PER_PIXEL = 20;
 
 export default function Board() {
     // Contexts
-    const { numRows, pixelLimit, mintedPixels, pixels, coordsToRowCol, rowColToCoords, useDarkMode, color, setColor, setSelectedPixel, currSelectedPixel, getNotMintedColor } = useContext(Data);
+    const { numRows, pixelLimit, mintedPixels, pixels, coordsToRowCol, rowColToCoords, useDarkMode, color, setColor, setSelectedPixel, currSelectedPixel, getNotMintedColor, setMinting, setBuying } =
+        useContext(Data);
 
     // #################################################
     //   CANVAS
@@ -77,6 +78,10 @@ export default function Board() {
             if (mintedPixels.current.includes(newSelectedPixel)) setColor(pixels.current[newSelectedPixel].color.toLowerCase());
             else setColor(getNotMintedColor(row, col));
         }
+
+        // Cancel minting or buying
+        setMinting(false);
+        setBuying(false);
     };
 
     // On mouse move over the canvas
@@ -110,7 +115,7 @@ export default function Board() {
     };
 
     // On color changed in the chain
-    const onColorChanged = ({ pixelCoords, newColor }) => {
+    const onChangePixelColorAndPrice = ({ pixelCoords, newColor }) => {
         // Get row and col
         const coords = coordsToRowCol(pixelCoords);
 
@@ -210,7 +215,7 @@ export default function Board() {
         canvasRefEffect.addEventListener("mousemove", onCanvasMouseMove);
         canvasRefEffect.addEventListener("mouseleave", onCanvasMouseLeave);
         canvasRefEffect.addEventListener("mouseup", onCanvasMouseUp);
-        window.PubSub.sub("changePixelColorAndPrice", onColorChanged);
+        window.PubSub.sub("changePixelColorAndPrice", onChangePixelColorAndPrice);
 
         // Resize on load
         onResize(true);
@@ -244,7 +249,7 @@ export default function Board() {
             canvasRefEffect.removeEventListener("mousemove", onCanvasMouseMove);
             canvasRefEffect.removeEventListener("mouseleave", onCanvasMouseLeave);
             canvasRefEffect.removeEventListener("mouseup", onCanvasMouseUp);
-            window.PubSub.unsub("changePixelColorAndPrice", onColorChanged);
+            window.PubSub.unsub("changePixelColorAndPrice", onChangePixelColorAndPrice);
 
             // Clear timeouts
             if (resizeTimeout.current) clearTimeout(resizeTimeout.current);

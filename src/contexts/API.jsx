@@ -195,12 +195,12 @@ const APIProvider = ({ children }) => {
             // Update pixel
             pixels.current[coords] = {
                 0: coords.toString(),
-                1: "#ffffff",
+                1: color,
                 2: account,
                 3: weiPrice.toString(),
                 4: true,
                 coords: coords.toString(),
-                color: "#ffffff",
+                color: color,
                 owner: account,
                 weiPrice: weiPrice.toString(),
                 exists: true,

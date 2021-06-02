@@ -56,6 +56,11 @@ const DataProvider = ({ children }) => {
 
     // PRICE
     const [weiPrice, setWeiPrice] = useState(Web3.utils.toWei("0.005", "Ether"));
+    const notMintedPrice = Web3.utils.toWei("0.005", "Ether");
+
+    // ACTION
+    const [minting, setMinting] = useState(false);
+    const [buying, setBuying] = useState(false);
 
     // #################################################
     //   PROVIDE DATA
@@ -101,6 +106,13 @@ const DataProvider = ({ children }) => {
                 // PRICE
                 weiPrice,
                 setWeiPrice,
+                notMintedPrice,
+
+                // ACTION
+                minting,
+                setMinting,
+                buying,
+                setBuying,
             }}
         >
             {children}

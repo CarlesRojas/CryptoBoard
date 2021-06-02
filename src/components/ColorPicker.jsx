@@ -88,13 +88,23 @@ export default function ColorPicker() {
     };
 
     // Update all when the final color is updated
+    const colorEffectFirstRun = useRef(true);
     useEffect(() => {
+        // Skip first time
+        if (colorEffectFirstRun.current) return (colorEffectFirstRun.current = false);
+
+        console.log(`color ${color}`);
         setValidColor(color);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [color]);
 
     // Update all when hex input is updated and valid
+    const hexValueEffectFirstRun = useRef(true);
     useEffect(() => {
+        // Skip first time
+        if (hexValueEffectFirstRun.current) return (hexValueEffectFirstRun.current = false);
+
+        console.log(`hexValue ${hexValue}`);
         const valid = checkHexColor(hexValue);
         if (valid) setValidColor(hexValue);
         else setHexIsValid(false);
@@ -102,7 +112,12 @@ export default function ColorPicker() {
     }, [hexValue]);
 
     // Update all when red input is updated and all the rgb are valid
+    const redValueEffectFirstRun = useRef(true);
     useEffect(() => {
+        // Skip first time
+        if (redValueEffectFirstRun.current) return (redValueEffectFirstRun.current = false);
+
+        console.log(`redValue ${redValue}`);
         const valid = checkRGBColor(redValue);
         if (valid && greenIsValid && blueIsValid) setValidColor(rgbToHex(parseInt(redValue), parseInt(greenValue), parseInt(blueValue)));
         else setRedIsValid(false);
@@ -110,7 +125,12 @@ export default function ColorPicker() {
     }, [redValue]);
 
     // Update all when green input is updated and all the rgb are valid
+    const greenValueEffectFirstRun = useRef(true);
     useEffect(() => {
+        // Skip first time
+        if (greenValueEffectFirstRun.current) return (greenValueEffectFirstRun.current = false);
+
+        console.log(`greenValue ${greenValue}`);
         const valid = checkRGBColor(greenValue);
         if (redIsValid && valid && blueIsValid) setValidColor(rgbToHex(parseInt(redValue), parseInt(greenValue), parseInt(blueValue)));
         else setGreenIsValid(false);
@@ -118,7 +138,12 @@ export default function ColorPicker() {
     }, [greenValue]);
 
     // Update all when blue input is updated and all the rgb are valid
+    const blueValueEffectFirstRun = useRef(true);
     useEffect(() => {
+        // Skip first time
+        if (blueValueEffectFirstRun.current) return (blueValueEffectFirstRun.current = false);
+
+        console.log(`blueValue ${blueValue}`);
         const valid = checkRGBColor(blueValue);
         if (redIsValid && greenIsValid && valid) setValidColor(rgbToHex(parseInt(redValue), parseInt(greenValue), parseInt(blueValue)));
         else setBlueIsValid(false);
