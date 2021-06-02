@@ -10,8 +10,7 @@ const PIXELS_PER_PIXEL = 20;
 
 export default function Board() {
     // Contexts
-    const { numRows, pixelLimit, mintedPixels, pixels, coordsToRowCol, rowColToCoords, useDarkMode, color, setColor, setSelectedPixel, currSelectedPixel, getNotMintedColor } =
-        useContext(Data);
+    const { numRows, pixelLimit, mintedPixels, pixels, coordsToRowCol, rowColToCoords, useDarkMode, color, setColor, setSelectedPixel, currSelectedPixel, getNotMintedColor } = useContext(Data);
 
     // #################################################
     //   CANVAS
@@ -50,16 +49,7 @@ export default function Board() {
     };
 
     // Highlight a pixel
-    const highlightPixel = (row, col) => {
-        // // Clear canvas
-        // ctxHighlight.current.clearRect(0, 0, canvasWidth, canvasHeight);
-        // // Highlight pixel outline black
-        // ctxHighlight.current.fillStyle = "black"; // getMostContrastedColor(currentPixelColor, "white", "black");
-        // ctxHighlight.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL, PIXELS_PER_PIXEL, 1);
-        // ctxHighlight.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL, 1, PIXELS_PER_PIXEL);
-        // ctxHighlight.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL - 1, PIXELS_PER_PIXEL, 1);
-        // ctxHighlight.current.fillRect(col * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL, 1, PIXELS_PER_PIXEL);
-    };
+    const highlightPixel = (row, col) => {};
 
     // Select a pixel
     const selectPixel = (row, col) => {
@@ -79,20 +69,6 @@ export default function Board() {
 
         // Select pixel
         else {
-            // // Highlight pixel outline black
-            // ctxSelect.current.fillStyle = "black"; // getMostContrastedColor(currentPixelColor, "white", "black");
-            // ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL, PIXELS_PER_PIXEL, 1);
-            // ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL, 1, PIXELS_PER_PIXEL);
-            // ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL - 1, PIXELS_PER_PIXEL, 1);
-            // ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL, 1, PIXELS_PER_PIXEL);
-
-            // // Highlight pixel outline white
-            // ctxSelect.current.fillStyle = "white";
-            // ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL - 1, PIXELS_PER_PIXEL + 2, 1);
-            // ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL - 1, 1, PIXELS_PER_PIXEL + 2);
-            // ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL - 1, row * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL, PIXELS_PER_PIXEL + 2, 1);
-            // ctxSelect.current.fillRect(col * PIXELS_PER_PIXEL + PIXELS_PER_PIXEL, row * PIXELS_PER_PIXEL - 1, 1, PIXELS_PER_PIXEL + 2);
-
             // Set the selected pixel
             currSelectedPixel.current = newSelectedPixel;
             setSelectedPixel(newSelectedPixel);
@@ -234,7 +210,7 @@ export default function Board() {
         canvasRefEffect.addEventListener("mousemove", onCanvasMouseMove);
         canvasRefEffect.addEventListener("mouseleave", onCanvasMouseLeave);
         canvasRefEffect.addEventListener("mouseup", onCanvasMouseUp);
-        window.PubSub.sub("colorChanged", onColorChanged);
+        window.PubSub.sub("changePixelColorAndPrice", onColorChanged);
 
         // Resize on load
         onResize(true);
@@ -268,7 +244,7 @@ export default function Board() {
             canvasRefEffect.removeEventListener("mousemove", onCanvasMouseMove);
             canvasRefEffect.removeEventListener("mouseleave", onCanvasMouseLeave);
             canvasRefEffect.removeEventListener("mouseup", onCanvasMouseUp);
-            window.PubSub.unsub("colorChanged", onColorChanged);
+            window.PubSub.unsub("changePixelColorAndPrice", onColorChanged);
 
             // Clear timeouts
             if (resizeTimeout.current) clearTimeout(resizeTimeout.current);

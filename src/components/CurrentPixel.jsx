@@ -18,7 +18,7 @@ import LoadingIcon from "resources/icons/loading.svg";
 export default function CurrentPixel({ color, coords, owner }) {
     // Contexts
     const { copy, getMostContrastedColor } = useContext(Utils);
-    const { changePixelColor, mint } = useContext(API);
+    const { changePixelColorAndPrice, mint } = useContext(API);
     const { pixels, pixelLimit, coordsToRowCol, useDarkMode, setColor, selectedPixel, account } = useContext(Data);
 
     // Columns and rows
@@ -47,10 +47,10 @@ export default function CurrentPixel({ color, coords, owner }) {
             setSaving(true);
 
             // Save color
-            const colorSaved = await changePixelColor(coords, color);
+            const colorSaved = await changePixelColorAndPrice(coords, color);
 
             // Inform about the color change
-            if (colorSaved) window.PubSub.emit("colorChanged", { pixelCoords: coords, newColor: color });
+            if (colorSaved) window.PubSub.emit("changePixelColorAndPrice", { pixelCoords: coords, newColor: color });
             // Show Error
             else setErrorMessage("Pixel was not saved");
 
@@ -58,7 +58,7 @@ export default function CurrentPixel({ color, coords, owner }) {
         }
     };
 
-    // Reset pixel to blockchain color
+    // Reset pixel to blockchain color ROJAS
     const resetColor = () => {
         // Only if it is a valid pixel
         if (pixelInfo && color) {
@@ -74,11 +74,11 @@ export default function CurrentPixel({ color, coords, owner }) {
         if (typeof selectedPixel === "number" && selectedPixel >= 0 && selectedPixel < pixelLimit.current) {
             setMinting(true);
 
-            // Mint pixel
-            const pixelMinded = await mint(coords);
+            // Mint pixel ROJAS ADD COLOR AND PRICE FROM THE SELECTOR
+            const pixelMinded = await mint(coords, "#ffffff", 1);
 
             // Inform about the color change
-            if (pixelMinded) window.PubSub.emit("colorChanged", { pixelCoords: coords, newColor: "#ffffff" });
+            if (pixelMinded) window.PubSub.emit("colorPriceChanged", { pixelCoords: coords, newColor: "#ffffff", newWeiPrice: 1 });
             // Show Error
             else setErrorMessage("Pixel was not minted");
 
@@ -124,11 +124,7 @@ export default function CurrentPixel({ color, coords, owner }) {
         pixelInfo && color.toLowerCase() !== pixelInfo.color.toLowerCase() && !errorMessage && owner !== null && owner === account ? (
             <React.Fragment>
                 <div className={classnames("button", { dark: useDarkMode })} onClick={saveColor} style={{ backgroundColor: color, color: getMostContrastedColor(color, "white", "black") }}>
-                    {saving ? (
-                        <SVG className={classnames("loadingIcon", { dark: useDarkMode })} src={LoadingIcon} style={{ color: getMostContrastedColor(color, "white", "black") }} />
-                    ) : (
-                        "SAVE"
-                    )}
+                    {saving ? <SVG className={classnames("loadingIcon", { dark: useDarkMode })} src={LoadingIcon} style={{ color: getMostContrastedColor(color, "white", "black") }} /> : "SAVE"}
                 </div>
                 <div className={classnames("button", "icon", { dark: useDarkMode })} onClick={resetColor}>
                     <SVG className={classnames("undoIcon", { dark: useDarkMode })} src={UndoIcon} />

@@ -1,4 +1,5 @@
 import React, { createContext, useRef, useState, useContext } from "react";
+import Web3 from "web3";
 
 // Contexts
 import { Utils } from "contexts/Utils";
@@ -44,12 +45,17 @@ const DataProvider = ({ children }) => {
     const pixels = useRef(null);
     const coordsToRowCol = (coords) => (numRows < 0 ? null : { row: coords % numRows.current, col: Math.floor(coords / numRows.current) });
     const rowColToCoords = (row, col) => (numRows < 0 ? null : col * numRows.current + row);
+
+    // SELECTED PIXEL INFO
     const [selectedPixel, setSelectedPixel] = useState(-1);
     const currSelectedPixel = useRef(-1);
 
     // COLOR PICKER
     const [color, setColor] = useState("#ffffff");
     const getNotMintedColor = (row, col) => ((row + col) % 2 === 0 ? "#ededed" : "#e5e5e5");
+
+    // PRICE
+    const [weiPrice, setWeiPrice] = useState(Web3.utils.toWei("0.005", "Ether"));
 
     // #################################################
     //   PROVIDE DATA
@@ -91,6 +97,10 @@ const DataProvider = ({ children }) => {
                 color,
                 setColor,
                 getNotMintedColor,
+
+                // PRICE
+                weiPrice,
+                setWeiPrice,
             }}
         >
             {children}

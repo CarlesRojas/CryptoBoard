@@ -9,7 +9,8 @@ import { Data } from "contexts/Data";
 export const API = createContext();
 
 const APIProvider = ({ children }) => {
-    const { account, setAccount, networkID, networkInfo, contract, numRows, pixelCount, pixelLimit, mintedPixels, pixels, setSelectedPixel, currSelectedPixel, setColor } = useContext(Data);
+    const { account, setAccount, networkID, networkInfo, contract, numRows, pixelCount, pixelLimit, mintedPixels, pixels, setSelectedPixel, currSelectedPixel, setColor, setWeiPrice } =
+        useContext(Data);
 
     // Load web3, the main eth account & the smart contract
     const load = async () => {
@@ -52,59 +53,23 @@ const APIProvider = ({ children }) => {
         }
     };
 
-    // Mint a pixel
-    const mint = async (coords) => {
-        console.log("MINT PIXEL");
-
-        // Return if not a correct coord
-        if (typeof coords !== "number" || (coords < 0 && coords >= pixelLimit.current)) return;
-
-        try {
-            await contract.current.methods.mint(coords, "#ffffff").send({ from: account });
-
-            // Update minted pixels array
-            mintedPixels.current.push(coords);
-
-            // Update pixel
-            pixels.current[coords] = {
-                0: coords.toString(),
-                1: "#ffffff",
-                2: account,
-                3: true,
-                coords: coords.toString(),
-                color: "#ffffff",
-                author: account,
-                exists: true,
-            };
-
-            // Set selected pixel
-            setSelectedPixel(coords);
-            currSelectedPixel.current = coords;
-            setColor("#ffffff");
-
-            return true;
-        } catch (error) {
-            console.log(error);
-            return false;
-        }
-    };
-
     // Get the total number of rows
     const getNumRows = async () => {
         console.log("GET NUM ROWS");
 
         // Return if the contract has not been loaded
-        if (!contract.current) return;
+        if (!contract.current) return -1;
 
         // Return if we have already fetched it
         if (numRows.current >= 0) return numRows.current;
 
         try {
-            const result = await contract.current.methods.numRows().call();
-            numRows.current = parseInt(result);
+            const value = await contract.current.methods.NUM_ROWS().call();
+            numRows.current = parseInt(value);
             return numRows.current;
         } catch (error) {
             console.log(error);
+            return -1;
         }
     };
 
@@ -113,10 +78,7 @@ const APIProvider = ({ children }) => {
         console.log("GET PIXEL COUNT");
 
         // Return if the contract has not been loaded
-        if (!contract.current) return;
-
-        // If we do not have the number of rows, get it
-        if (numRows.current < 0) await getNumRows();
+        if (!contract.current) return -1;
 
         // Return if we have already fetched it
         if (pixelCount.current >= 0) return pixelCount.current;
@@ -127,6 +89,7 @@ const APIProvider = ({ children }) => {
             return pixelCount.current;
         } catch (error) {
             console.log(error);
+            return -1;
         }
     };
 
@@ -135,17 +98,18 @@ const APIProvider = ({ children }) => {
         console.log("GET PIXEL LIMIT");
 
         // Return if the contract has not been loaded
-        if (!contract.current) return;
+        if (!contract.current) return -1;
 
         // Return if we have already fetched it
         if (pixelLimit.current >= 0) return pixelLimit.current;
 
         try {
-            const value = await contract.current.methods.pixelLimit().call();
+            const value = await contract.current.methods.PIXEL_LIMIT().call();
             pixelLimit.current = parseInt(value);
             return pixelLimit.current;
         } catch (error) {
             console.log(error);
+            return -1;
         }
     };
 
@@ -154,7 +118,7 @@ const APIProvider = ({ children }) => {
         console.log("GET MINTED PIXELS");
 
         // Return if the contract has not been loaded
-        if (!contract.current) return;
+        if (!contract.current) return null;
 
         // Return if we have already fetched it
         if (mintedPixels.current !== null) return mintedPixels.current;
@@ -172,6 +136,7 @@ const APIProvider = ({ children }) => {
             return mintedPixels.current;
         } catch (error) {
             console.log(error);
+            return null;
         }
     };
 
@@ -180,7 +145,7 @@ const APIProvider = ({ children }) => {
         console.log("GET PIXELS");
 
         // Return if the contract has not been loaded
-        if (!contract.current) return [];
+        if (!contract.current) return null;
 
         // Return if we have already fetched it
         if (pixels.current !== null) return pixels.current;
@@ -204,26 +169,81 @@ const APIProvider = ({ children }) => {
             return pixels.current;
         } catch (error) {
             console.log(error);
+            return null;
+        }
+    };
+
+    // Mint a pixel
+    const mint = async (coords, color, weiPrice) => {
+        console.log("MINT PIXEL");
+
+        // Return if the contract has not been loaded
+        if (!contract.current) return false;
+
+        // Return if not a correct coords, color or price
+        if (typeof coords !== "number" || (coords < 0 && coords >= pixelLimit.current) || typeof weiPrice !== "number" || weiPrice < 0) return false;
+
+        // If we do not have the pixel count, get it
+        if (pixelCount.current < 0) await getPixelCount();
+
+        try {
+            await contract.current.methods.mint(coords, color, weiPrice).send({ from: account });
+
+            // Update minted pixels array
+            mintedPixels.current.push(coords);
+
+            // Update pixel
+            pixels.current[coords] = {
+                0: coords.toString(),
+                1: "#ffffff",
+                2: account,
+                3: weiPrice.toString(),
+                4: true,
+                coords: coords.toString(),
+                color: "#ffffff",
+                owner: account,
+                weiPrice: weiPrice.toString(),
+                exists: true,
+            };
+
+            // Update pixel count
+            pixelCount.current = pixelCount.current + 1;
+
+            // Set selected pixel
+            setSelectedPixel(coords);
+            currSelectedPixel.current = coords;
+            setColor(color);
+            setWeiPrice(weiPrice);
+
+            return true;
+        } catch (error) {
+            console.log(error);
+            return false;
         }
     };
 
     // Change color of a pixel
-    const changePixelColor = async (coord, newColor) => {
+    const changePixelColorAndPrice = async (coords, newColor, newWeiPrice) => {
         console.log("CHANGE PIXEL COLOR");
 
         // Return if the contract has not been loaded
-        if (!contract.current) return [];
+        if (!contract.current) return false;
 
-        // If we do not have the pixels get the
+        // If we do not have the pixels get them
         if (pixels.current.length <= 0) await getPixels();
+
+        // Return if not a correct coords, color or price
+        if (typeof coords !== "number" || (coords < 0 && coords >= pixelLimit.current) || typeof newWeiPrice !== "number" || newWeiPrice < 0) return false;
 
         try {
             // Change pixel color
-            await contract.current.methods.changeColor(coord, newColor).send({ from: account });
+            await contract.current.methods.changeColorAndPrice(coords, newColor, newWeiPrice).send({ from: account });
 
             // Update pixels
-            pixels.current[coord]["1"] = newColor.toLowerCase();
-            pixels.current[coord]["color"] = newColor.toLowerCase();
+            pixels.current[coords]["1"] = newColor.toLowerCase();
+            pixels.current[coords]["color"] = newColor.toLowerCase();
+            pixels.current[coords]["3"] = newWeiPrice.toString();
+            pixels.current[coords]["weiPrice"] = newWeiPrice.toString();
 
             return true;
         } catch (error) {
@@ -237,13 +257,13 @@ const APIProvider = ({ children }) => {
         <API.Provider
             value={{
                 load,
-                mint,
                 getNumRows,
                 getPixelCount,
                 getPixelLimit,
                 getMintedPixels,
                 getPixels,
-                changePixelColor,
+                mint,
+                changePixelColorAndPrice,
             }}
         >
             {children}

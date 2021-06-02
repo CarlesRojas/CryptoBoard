@@ -19,14 +19,14 @@
 
 #### Get Info
 
-`numRows = await contract.numRows()`
+`numRows = await contract.NUM_ROWS()`
 `numRows.toNumber()`
+
+`pixelLimit = await contract.PIXEL_LIMIT()`
+`pixelLimit.toNumber()`
 
 `pixelCount = await contract.pixelCount()`
 `pixelCount.toNumber()`
-
-`pixelLimit = await contract.pixelLimit()`
-`pixelLimit.toNumber()`
 
 #### Mint
 

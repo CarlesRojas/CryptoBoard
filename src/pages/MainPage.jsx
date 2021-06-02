@@ -31,7 +31,7 @@ export default function MainPage() {
 
     // Current pixel already minted
     if (selectedPixel >= 0 && selectedPixel < pixelLimit.current && mintedPixels.current.includes(selectedPixel)) {
-        var currPixel = <CurrentPixel owner={pixels.current[selectedPixel].author} coords={selectedPixel} color={color}></CurrentPixel>;
+        var currPixel = <CurrentPixel owner={pixels.current[selectedPixel].owner} coords={selectedPixel} color={color}></CurrentPixel>;
     }
 
     // Current pixel not minted
@@ -67,10 +67,10 @@ export default function MainPage() {
     3  8  13  18  23
     4  9  14  19  24
 
-    Coord to Row & Col
-        row = coord % numRows
-        col = floor(coord / numRows)
+    Coords to Row & Col
+        row = coords % numRows
+        col = floor(coords / numRows)
 
-    Row & Col to Coord
-        coord = col * numRows + row
+    Row & Col to Coords
+        coords = col * numRows + row
 */
