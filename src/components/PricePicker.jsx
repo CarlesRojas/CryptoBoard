@@ -22,7 +22,6 @@ export default function PricePicker() {
 
     // Set valid price
     const setValidPrice = (value) => {
-        console.log(parseFloat(value));
         // Is valid
         setEthPriceIsValid(true);
 

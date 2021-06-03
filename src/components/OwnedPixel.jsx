@@ -10,7 +10,7 @@ import Pixel from "components/Pixel";
 export default function OwnedPixel() {
     // Contexts
     const { copy } = useContext(Utils);
-    const { pixels, useDarkMode, selectedPixel } = useContext(Data);
+    const { pixels /*, useDarkMode*/, selectedPixel } = useContext(Data);
 
     // Pixel
     const pixelInfo = pixels.current[selectedPixel];

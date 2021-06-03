@@ -122,7 +122,6 @@ const APIProvider = ({ children }) => {
                 const value = await contract.current.methods.mintedPixels(i).call();
                 mintedPixels.current.push(parseInt(value));
             }
-            console.log(mintedPixels.current);
             return mintedPixels.current;
         } catch (error) {
             console.log(error);
@@ -153,7 +152,6 @@ const APIProvider = ({ children }) => {
                     pixels.current.push(currPixel);
                 } else pixels.current.push(null);
             }
-            console.log(pixels.current);
 
             return pixels.current;
         } catch (error) {
