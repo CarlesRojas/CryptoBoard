@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { Utils } from "contexts/Utils";
 import { Data } from "contexts/Data";
 
-export default function PricePicker() {
+export default function PricePicker({ pixelOwned }) {
     // Contexts
     const { isFloat } = useContext(Utils);
     const { ethPrice, setEthPrice, useDarkMode, ethPriceIsValid, setEthPriceIsValid } = useContext(Data);
@@ -67,6 +67,9 @@ export default function PricePicker() {
     //   RENDER
     // #################################################
 
+    // Disclaimer
+    const disclaimer = pixelOwned ? "Other people can buy this pixel from you at any point for this price." : "Other people will be able to buy this pixel from you at any point for this price.";
+
     return (
         <div className="pricePicker">
             <div className="inputContainer">
@@ -82,7 +85,7 @@ export default function PricePicker() {
                 <p className="unit">ETH</p>
             </div>
 
-            <p className="message small">Other people will be able to buy this pixel from you at any point for this price.</p>
+            <p className="message small">{disclaimer}</p>
         </div>
     );
 }

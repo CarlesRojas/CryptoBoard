@@ -54,16 +54,18 @@ export default function Pixel({ pad }) {
 
             // Set color and price
             if (pixelInfo) {
-                setColor(pixelInfo.color);
+                setColor(pixelInfo.color.toLowerCase());
                 setEthPrice(Web3.utils.fromWei(pixelInfo.weiPrice.toString(), "Ether").toString());
             } else {
                 setColor(getNotMintedColor(newRowCol.row, newRowCol.col));
                 setEthPrice(notMintedPrice.current);
-                setMinting(false);
-                setBuying(false);
-                setColorPickerIsValid(true);
-                setEthPriceIsValid(true);
             }
+
+            // All valid and no action in progress
+            setMinting(false);
+            setBuying(false);
+            setColorPickerIsValid(true);
+            setEthPriceIsValid(true);
         }
     };
 

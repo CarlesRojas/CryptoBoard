@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from "react";
-import Web3 from "web3";
 import CryptoPlace from "abis/CryptoPlace.json";
+import Web3 from "web3";
 
 // Contexts
 import { Data } from "contexts/Data";
@@ -9,7 +9,25 @@ import { Data } from "contexts/Data";
 export const API = createContext();
 
 const APIProvider = ({ children }) => {
-    const { account, setAccount, networkID, networkInfo, contract, numRows, pixelCount, pixelLimit, mintedPixels, pixels, setSelectedPixel, setColor, setEthPrice } = useContext(Data);
+    const {
+        account,
+        setAccount,
+        networkID,
+        networkInfo,
+        contract,
+        numRows,
+        pixelCount,
+        pixelLimit,
+        mintedPixels,
+        pixels,
+        setSelectedPixel,
+        setColor,
+        setEthPrice,
+        setMinting,
+        setBuying,
+        setColorPickerIsValid,
+        setEthPriceIsValid,
+    } = useContext(Data);
 
     // Load web3, the main eth account & the smart contract
     const load = async () => {
@@ -196,8 +214,12 @@ const APIProvider = ({ children }) => {
 
             // Set selected pixel
             setSelectedPixel(coords);
-            setColor(color);
+            setColor(color.toLowerCase());
             setEthPrice(ethPrice);
+            setMinting(false);
+            setBuying(false);
+            setColorPickerIsValid(true);
+            setEthPriceIsValid(true);
 
             return true;
         } catch (error) {

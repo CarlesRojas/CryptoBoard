@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useContext } from "react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import classNames from "classnames";
+import Web3 from "web3";
 
 // Contexts
 import { Data } from "contexts/Data";
@@ -27,6 +28,8 @@ export default function Board() {
         setBuying,
         setColorPickerIsValid,
         setEthPriceIsValid,
+        setEthPrice,
+        notMintedPrice,
     } = useContext(Data);
 
     // #################################################
@@ -78,15 +81,25 @@ export default function Board() {
         // ctxSelect.current.clearRect(0, 0, canvasWidth, canvasHeight);
 
         // If clicked on the same pixel again, diselect it
-        if (currSelectedPixel.current === newSelectedPixel) setSelectedPixel(-1);
+        if (currSelectedPixel.current === newSelectedPixel) {
+            setSelectedPixel(-1);
+            setColor(getNotMintedColor(row, col));
+            setEthPrice(notMintedPrice.current);
+        }
         // Select pixel
         else {
             // Set the selected pixel
             setSelectedPixel(newSelectedPixel);
+            const pixelInfo = pixels.current[newSelectedPixel];
 
-            // Set the color
-            if (mintedPixels.current.includes(newSelectedPixel)) setColor(pixels.current[newSelectedPixel].color.toLowerCase());
-            else setColor(getNotMintedColor(row, col));
+            // Set color and price
+            if (pixelInfo) {
+                setColor(pixelInfo.color.toLowerCase());
+                setEthPrice(Web3.utils.fromWei(pixelInfo.weiPrice.toString(), "Ether").toString());
+            } else {
+                setColor(getNotMintedColor(row, col));
+                setEthPrice(notMintedPrice.current);
+            }
         }
 
         // Cancel minting or buying

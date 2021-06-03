@@ -17,8 +17,7 @@ import UndoIcon from "resources/icons/undo.svg";
 
 export default function Minting() {
     // Contexts
-    const { useDarkMode, selectedPixel, pixelLimit, color, coordsToRowCol, setColor, ethPrice, setEthPrice, notMintedPrice, getNotMintedColor, colorPickerIsValid, ethPriceIsValid, setMinting } =
-        useContext(Data);
+    const { useDarkMode, selectedPixel, pixelLimit, color, coordsToRowCol, setColor, ethPrice, setEthPrice, notMintedPrice, getNotMintedColor, colorPickerIsValid, ethPriceIsValid } = useContext(Data);
     const { mint } = useContext(API);
 
     // #################################################
@@ -49,10 +48,7 @@ export default function Minting() {
     useEffect(() => {
         if (showErrorTimeout.current) clearTimeout(showErrorTimeout.current);
 
-        if (errorMessage)
-            showErrorTimeout.current = setTimeout(() => {
-                setErrorMessage("");
-            }, 2000);
+        if (errorMessage) showErrorTimeout.current = setTimeout(() => setErrorMessage(""), 2000);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [errorMessage]);
@@ -77,11 +73,7 @@ export default function Minting() {
             const pixelMinded = await mint(selectedPixel, color, ethPrice);
 
             // Inform about the color change
-            if (pixelMinded) {
-                window.PubSub.emit("changePixelColorAndPrice", { pixelCoords: selectedPixel, newColor: color, newEthPrice: ethPrice });
-                setMinting(false);
-            }
-
+            if (pixelMinded) window.PubSub.emit("changePixelColorAndPrice", { pixelCoords: selectedPixel, newColor: color, newEthPrice: ethPrice });
             // Show Error
             else {
                 setErrorMessage("Pixel was not minted");
@@ -138,7 +130,7 @@ export default function Minting() {
             <div className="space"></div>
 
             <p className={classnames("message", { dark: useDarkMode })}>Set the pixel initial price.</p>
-            <PricePicker />
+            <PricePicker pixelOwned={false} />
             <div className="space"></div>
 
             {buttons}

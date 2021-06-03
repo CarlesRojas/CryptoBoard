@@ -21,7 +21,7 @@ export default function NotOwnedPixel() {
 
     return (
         <div className="sectionContent">
-            <p className="title">Selected Pixel</p>
+            <p className="title">Not your Pixel</p>
 
             <Pixel pad={true} />
 
