@@ -142,7 +142,7 @@ const UtilsProvider = (props) => {
     const six_power = Math.pow(10, 6);
     const three_power = Math.pow(10, 3);
 
-    const format_number = (num) => {
+    const formatNumber = (num) => {
         var negative = num < 0;
         num = Math.abs(num);
         var letter = "";
@@ -173,6 +173,22 @@ const UtilsProvider = (props) => {
 
         return (+parseFloat(num) * (negative ? -1 : 1)).toString() + letter;
     };
+
+    function isFloat(val) {
+        var floatRegex = /^-?\d+(?:[.]\d*?)?$/;
+        if (!floatRegex.test(val)) return false;
+
+        val = parseFloat(val);
+        return !isNaN(val);
+    }
+
+    function isInt(val) {
+        var intRegex = /^-?\d+$/;
+        if (!intRegex.test(val)) return false;
+
+        var intVal = parseInt(val, 10);
+        return parseFloat(val) === intVal && !isNaN(intVal);
+    }
 
     // #######################################
     //      IMAGE FILES
@@ -439,7 +455,9 @@ const UtilsProvider = (props) => {
                 timeAgo,
 
                 // FORMAT NUMBERS
-                format_number,
+                formatNumber,
+                isFloat,
+                isInt,
 
                 // IMAGE FILES
                 urltoFile,

@@ -9,6 +9,7 @@ import { API } from "contexts/API";
 // Components
 import Pixel from "components/Pixel";
 import ColorPicker from "components/ColorPicker";
+import PricePicker from "components/PricePicker";
 
 // Icons
 import LoadingIcon from "resources/icons/loading.svg";
@@ -16,7 +17,8 @@ import UndoIcon from "resources/icons/undo.svg";
 
 export default function Minting() {
     // Contexts
-    const { useDarkMode, selectedPixel, pixelLimit, color, coordsToRowCol, setColor, setWeiPrice, notMintedPrice, getNotMintedColor } = useContext(Data);
+    const { useDarkMode, selectedPixel, pixelLimit, color, coordsToRowCol, setColor, ethPrice, setEthPrice, notMintedPrice, getNotMintedColor, colorPickerIsValid, ethPriceIsValid, setMinting } =
+        useContext(Data);
     const { mint } = useContext(API);
 
     // #################################################
@@ -30,7 +32,7 @@ export default function Minting() {
 
         // Set Color and Price
         setColor(getNotMintedColor(rowCol.row, rowCol.col));
-        setWeiPrice(notMintedPrice);
+        setEthPrice(notMintedPrice.current);
     };
 
     // #################################################
@@ -50,7 +52,7 @@ export default function Minting() {
         if (errorMessage)
             showErrorTimeout.current = setTimeout(() => {
                 setErrorMessage("");
-            }, 3000);
+            }, 2000);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [errorMessage]);
@@ -64,15 +66,22 @@ export default function Minting() {
 
     // Mint the pixel
     const mintPixel = async () => {
+        // Return if not a valid input (color or price)
+        if (!colorPickerIsValid || !ethPriceIsValid) return;
+
         // Only if it is a valid pixel
         if (typeof selectedPixel === "number" && selectedPixel >= 0 && selectedPixel < pixelLimit.current) {
             setLoading(true);
 
-            // Mint pixel ROJAS ADD COLOR AND PRICE FROM THE SELECTOR
-            const pixelMinded = await mint(selectedPixel, color, 1);
+            // Mint pixel
+            const pixelMinded = await mint(selectedPixel, color, ethPrice);
 
             // Inform about the color change
-            if (pixelMinded) window.PubSub.emit("changePixelColorAndPrice", { pixelCoords: selectedPixel, newColor: color, newWeiPrice: 1 });
+            if (pixelMinded) {
+                window.PubSub.emit("changePixelColorAndPrice", { pixelCoords: selectedPixel, newColor: color, newEthPrice: ethPrice });
+                setMinting(false);
+            }
+
             // Show Error
             else {
                 setErrorMessage("Pixel was not minted");
@@ -103,7 +112,7 @@ export default function Minting() {
     // Mint Button
     var buttons = !errorMessage ? (
         <div className="buttonsContainer">
-            <div className={classnames("button", { dark: useDarkMode })} onClick={mintPixel}>
+            <div className={classnames("button", { dark: useDarkMode }, { invalid: !colorPickerIsValid || !ethPriceIsValid })} onClick={mintPixel}>
                 {loading ? <SVG className={classnames("loadingIcon", { dark: useDarkMode })} src={LoadingIcon} /> : "MINT"}
             </div>
 
@@ -129,6 +138,7 @@ export default function Minting() {
             <div className="space"></div>
 
             <p className={classnames("message", { dark: useDarkMode })}>Set the pixel initial price.</p>
+            <PricePicker />
             <div className="space"></div>
 
             {buttons}

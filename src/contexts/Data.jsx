@@ -1,5 +1,4 @@
 import React, { createContext, useRef, useState, useContext } from "react";
-import Web3 from "web3";
 
 // Contexts
 import { Utils } from "contexts/Utils";
@@ -47,16 +46,22 @@ const DataProvider = ({ children }) => {
     const rowColToCoords = (row, col) => (numRows < 0 ? null : col * numRows.current + row);
 
     // SELECTED PIXEL INFO
-    const [selectedPixel, setSelectedPixel] = useState(-1);
+    const [selectedPixel, setStateSelectedPixel] = useState(-1);
     const currSelectedPixel = useRef(-1);
+    const setSelectedPixel = (newSelectedPixel) => {
+        currSelectedPixel.current = newSelectedPixel;
+        setStateSelectedPixel(newSelectedPixel);
+    };
 
     // COLOR PICKER
     const [color, setColor] = useState("#ffffff");
+    const [colorPickerIsValid, setColorPickerIsValid] = useState(true);
     const getNotMintedColor = (row, col) => ((row + col) % 2 === 0 ? "#ededed" : "#e5e5e5");
 
     // PRICE
-    const [weiPrice, setWeiPrice] = useState(Web3.utils.toWei("0.005", "Ether"));
-    const notMintedPrice = Web3.utils.toWei("0.005", "Ether");
+    const [ethPrice, setEthPrice] = useState("0.005");
+    const [ethPriceIsValid, setEthPriceIsValid] = useState(true);
+    const notMintedPrice = useRef("0.005");
 
     // ACTION
     const [minting, setMinting] = useState(false);
@@ -95,17 +100,21 @@ const DataProvider = ({ children }) => {
                 coordsToRowCol,
                 rowColToCoords,
                 selectedPixel,
-                setSelectedPixel,
                 currSelectedPixel,
+                setSelectedPixel,
 
                 // COLOR PICKER
                 color,
                 setColor,
+                colorPickerIsValid,
+                setColorPickerIsValid,
                 getNotMintedColor,
 
                 // PRICE
-                weiPrice,
-                setWeiPrice,
+                ethPrice,
+                setEthPrice,
+                ethPriceIsValid,
+                setEthPriceIsValid,
                 notMintedPrice,
 
                 // ACTION

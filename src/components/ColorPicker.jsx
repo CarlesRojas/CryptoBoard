@@ -8,8 +8,8 @@ import { Data } from "contexts/Data";
 
 export default function ColorPicker() {
     // Contexts
-    const { hexToRgb, rgbToHex } = useContext(Utils);
-    const { color, setColor, useDarkMode } = useContext(Data);
+    const { hexToRgb, rgbToHex, isInt } = useContext(Utils);
+    const { color, setColor, useDarkMode, setColorPickerIsValid } = useContext(Data);
 
     // #################################################
     //   INPUTS
@@ -56,6 +56,7 @@ export default function ColorPicker() {
         setRedIsValid(true);
         setGreenIsValid(true);
         setBlueIsValid(true);
+        setColorPickerIsValid(true);
 
         // Set final color
         setColor(hex);
@@ -80,7 +81,7 @@ export default function ColorPicker() {
     const checkRGBColor = (num) => {
         var isValid = true;
 
-        let isNum = /^\d+$/.test(num);
+        let isNum = isInt(num);
         const number = parseInt(num);
         if (!isNum || number < 0 || number > 255) isValid = false;
 
@@ -93,8 +94,8 @@ export default function ColorPicker() {
         // Skip first time
         if (colorEffectFirstRun.current) return (colorEffectFirstRun.current = false);
 
-        console.log(`color ${color}`);
         setValidColor(color);
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [color]);
 
@@ -104,10 +105,13 @@ export default function ColorPicker() {
         // Skip first time
         if (hexValueEffectFirstRun.current) return (hexValueEffectFirstRun.current = false);
 
-        console.log(`hexValue ${hexValue}`);
         const valid = checkHexColor(hexValue);
         if (valid) setValidColor(hexValue);
-        else setHexIsValid(false);
+        else {
+            setHexIsValid(false);
+            setColorPickerIsValid(false);
+        }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [hexValue]);
 
@@ -117,10 +121,13 @@ export default function ColorPicker() {
         // Skip first time
         if (redValueEffectFirstRun.current) return (redValueEffectFirstRun.current = false);
 
-        console.log(`redValue ${redValue}`);
         const valid = checkRGBColor(redValue);
         if (valid && greenIsValid && blueIsValid) setValidColor(rgbToHex(parseInt(redValue), parseInt(greenValue), parseInt(blueValue)));
-        else setRedIsValid(false);
+        else {
+            setRedIsValid(false);
+            setColorPickerIsValid(false);
+        }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [redValue]);
 
@@ -130,10 +137,13 @@ export default function ColorPicker() {
         // Skip first time
         if (greenValueEffectFirstRun.current) return (greenValueEffectFirstRun.current = false);
 
-        console.log(`greenValue ${greenValue}`);
         const valid = checkRGBColor(greenValue);
         if (redIsValid && valid && blueIsValid) setValidColor(rgbToHex(parseInt(redValue), parseInt(greenValue), parseInt(blueValue)));
-        else setGreenIsValid(false);
+        else {
+            setGreenIsValid(false);
+            setColorPickerIsValid(false);
+        }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [greenValue]);
 
@@ -143,10 +153,13 @@ export default function ColorPicker() {
         // Skip first time
         if (blueValueEffectFirstRun.current) return (blueValueEffectFirstRun.current = false);
 
-        console.log(`blueValue ${blueValue}`);
         const valid = checkRGBColor(blueValue);
         if (redIsValid && greenIsValid && valid) setValidColor(rgbToHex(parseInt(redValue), parseInt(greenValue), parseInt(blueValue)));
-        else setBlueIsValid(false);
+        else {
+            setBlueIsValid(false);
+            setColorPickerIsValid(false);
+        }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [blueValue]);
 

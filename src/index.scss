@@ -548,18 +548,18 @@ input[type="number"] {
         grid-template-columns: 2fr 1fr 1fr 1fr;
         width: 100%;
         overflow: visible;
-        padding: 0 0.3rem 1rem;
+        padding: 0 0.3rem 0.5rem;
 
         @media only screen and (min-width: $mobileWidth) {
-            padding: 0 0.5rem 1rem;
+            padding: 0 0.5rem 0.5rem;
         }
 
         .container {
             overflow: visible;
-            padding: 1rem 0 0 0;
+            padding: 0.5rem 0 0 0;
 
             &:not(:first-child) {
-                padding: 1rem 0 0 0.5rem;
+                padding: 0.5rem 0 0 0.5rem;
             }
 
             .title {
@@ -604,6 +604,68 @@ input[type="number"] {
                     background-color: rgba(255, 0, 0, 0.1);
                 }
             }
+        }
+    }
+}
+
+// #######################################
+//      PRICE PICKER
+// #######################################
+
+.pricePicker {
+    position: relative;
+    width: 100%;
+    overflow: visible;
+    padding: 0.5rem 0.3rem 0.5rem;
+
+    @media only screen and (min-width: $mobileWidth) {
+        padding: 0.5rem 0.5rem 0.5rem;
+    }
+
+    .inputContainer {
+        position: relative;
+        width: 100%;
+        overflow: visible;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.5rem;
+
+        .input {
+            width: 50%;
+            background: none;
+            color: $text;
+            border: none;
+            outline: none;
+            padding: 0.2rem 0.4rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-align: center;
+            @include border-radius(100vw);
+            @include box-shadow(0 0 5px rgba(0, 0, 0, 0.2));
+
+            @media only screen and (min-width: $mobileWidth) {
+                padding: 0.25rem 0.5rem;
+                font-size: 1rem;
+            }
+
+            &.dark {
+                background-color: rgba(255, 255, 255, 0.08);
+                color: $textDark;
+                opacity: 0.8;
+            }
+
+            &.invalid {
+                background-color: rgba(255, 0, 0, 0.1);
+            }
+        }
+
+        .unit {
+            margin-left: 0.3rem;
+            width: fit-conntent;
+            opacity: 0.5;
+            font-size: 0.7rem;
+            font-weight: 700;
         }
     }
 }
@@ -916,7 +978,7 @@ input[type="number"] {
         }
 
         &.small {
-            opacity: 0.3;
+            opacity: 0.2;
             font-size: 0.7rem;
 
             @media only screen and (min-width: $mobileWidth) {
@@ -983,6 +1045,14 @@ input[type="number"] {
 
         &.dark {
             background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        &.invalid {
+            background-color: rgba(255, 0, 0, 0.1);
+
+            @media only screen and (min-width: $mobileWidth) {
+                transform: scale(1);
+            }
         }
 
         &.icon {

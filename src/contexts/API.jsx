@@ -9,13 +9,10 @@ import { Data } from "contexts/Data";
 export const API = createContext();
 
 const APIProvider = ({ children }) => {
-    const { account, setAccount, networkID, networkInfo, contract, numRows, pixelCount, pixelLimit, mintedPixels, pixels, setSelectedPixel, currSelectedPixel, setColor, setWeiPrice } =
-        useContext(Data);
+    const { account, setAccount, networkID, networkInfo, contract, numRows, pixelCount, pixelLimit, mintedPixels, pixels, setSelectedPixel, setColor, setEthPrice } = useContext(Data);
 
     // Load web3, the main eth account & the smart contract
     const load = async () => {
-        console.log("LOAD");
-
         try {
             if (window.ethereum) {
                 // Load Web3
@@ -55,8 +52,6 @@ const APIProvider = ({ children }) => {
 
     // Get the total number of rows
     const getNumRows = async () => {
-        console.log("GET NUM ROWS");
-
         // Return if the contract has not been loaded
         if (!contract.current) return -1;
 
@@ -75,8 +70,6 @@ const APIProvider = ({ children }) => {
 
     // Get the total number of pixels
     const getPixelCount = async () => {
-        console.log("GET PIXEL COUNT");
-
         // Return if the contract has not been loaded
         if (!contract.current) return -1;
 
@@ -95,8 +88,6 @@ const APIProvider = ({ children }) => {
 
     // Get the limit number of pixels
     const getPixelLimit = async () => {
-        console.log("GET PIXEL LIMIT");
-
         // Return if the contract has not been loaded
         if (!contract.current) return -1;
 
@@ -115,8 +106,6 @@ const APIProvider = ({ children }) => {
 
     // Get the coords of the minted pixels
     const getMintedPixels = async () => {
-        console.log("GET MINTED PIXELS");
-
         // Return if the contract has not been loaded
         if (!contract.current) return null;
 
@@ -133,6 +122,7 @@ const APIProvider = ({ children }) => {
                 const value = await contract.current.methods.mintedPixels(i).call();
                 mintedPixels.current.push(parseInt(value));
             }
+            console.log(mintedPixels.current);
             return mintedPixels.current;
         } catch (error) {
             console.log(error);
@@ -142,8 +132,6 @@ const APIProvider = ({ children }) => {
 
     // Get all the pixels
     const getPixels = async () => {
-        console.log("GET PIXELS");
-
         // Return if the contract has not been loaded
         if (!contract.current) return null;
 
@@ -165,6 +153,7 @@ const APIProvider = ({ children }) => {
                     pixels.current.push(currPixel);
                 } else pixels.current.push(null);
             }
+            console.log(pixels.current);
 
             return pixels.current;
         } catch (error) {
@@ -174,20 +163,18 @@ const APIProvider = ({ children }) => {
     };
 
     // Mint a pixel
-    const mint = async (coords, color, weiPrice) => {
-        console.log("MINT PIXEL");
-
+    const mint = async (coords, color, ethPrice) => {
         // Return if the contract has not been loaded
         if (!contract.current) return false;
 
         // Return if not a correct coords, color or price
-        if (typeof coords !== "number" || (coords < 0 && coords >= pixelLimit.current) || typeof weiPrice !== "number" || weiPrice < 0) return false;
+        if (typeof coords !== "number" || (coords < 0 && coords >= pixelLimit.current)) return false;
 
         // If we do not have the pixel count, get it
         if (pixelCount.current < 0) await getPixelCount();
 
         try {
-            await contract.current.methods.mint(coords, color, weiPrice).send({ from: account });
+            await contract.current.methods.mint(coords, color, Web3.utils.toWei(ethPrice.toString(), "Ether")).send({ from: account });
 
             // Update minted pixels array
             mintedPixels.current.push(coords);
@@ -197,12 +184,12 @@ const APIProvider = ({ children }) => {
                 0: coords.toString(),
                 1: color,
                 2: account,
-                3: weiPrice.toString(),
+                3: Web3.utils.toWei(ethPrice.toString(), "Ether").toString(),
                 4: true,
                 coords: coords.toString(),
                 color: color,
                 owner: account,
-                weiPrice: weiPrice.toString(),
+                weiPrice: Web3.utils.toWei(ethPrice.toString(), "Ether").toString(),
                 exists: true,
             };
 
@@ -211,9 +198,8 @@ const APIProvider = ({ children }) => {
 
             // Set selected pixel
             setSelectedPixel(coords);
-            currSelectedPixel.current = coords;
             setColor(color);
-            setWeiPrice(weiPrice);
+            setEthPrice(ethPrice);
 
             return true;
         } catch (error) {
@@ -223,9 +209,7 @@ const APIProvider = ({ children }) => {
     };
 
     // Change color of a pixel
-    const changePixelColorAndPrice = async (coords, newColor, newWeiPrice) => {
-        console.log("CHANGE PIXEL COLOR");
-
+    const changePixelColorAndPrice = async (coords, newColor, newEthPrice) => {
         // Return if the contract has not been loaded
         if (!contract.current) return false;
 
@@ -233,17 +217,17 @@ const APIProvider = ({ children }) => {
         if (pixels.current.length <= 0) await getPixels();
 
         // Return if not a correct coords, color or price
-        if (typeof coords !== "number" || (coords < 0 && coords >= pixelLimit.current) || typeof newWeiPrice !== "number" || newWeiPrice < 0) return false;
+        if (typeof coords !== "number" || (coords < 0 && coords >= pixelLimit.current)) return false;
 
         try {
             // Change pixel color
-            await contract.current.methods.changeColorAndPrice(coords, newColor, newWeiPrice).send({ from: account });
+            await contract.current.methods.changeColorAndPrice(coords, newColor, Web3.utils.toWei(newEthPrice.toString(), "Ether")).send({ from: account });
 
             // Update pixels
             pixels.current[coords]["1"] = newColor.toLowerCase();
             pixels.current[coords]["color"] = newColor.toLowerCase();
-            pixels.current[coords]["3"] = newWeiPrice.toString();
-            pixels.current[coords]["weiPrice"] = newWeiPrice.toString();
+            pixels.current[coords]["3"] = Web3.utils.toWei(newEthPrice.toString(), "Ether").toString();
+            pixels.current[coords]["weiPrice"] = Web3.utils.toWei(newEthPrice.toString(), "Ether").toString();
 
             return true;
         } catch (error) {

@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import ReactTooltip from "react-tooltip";
 import classnames from "classnames";
 import SVG from "react-inlinesvg";
+import Web3 from "web3";
 
 // Contexts
 import { Utils } from "contexts/Utils";
@@ -13,7 +14,25 @@ import ArrowIcon from "resources/icons/arrow.svg";
 export default function Pixel({ pad }) {
     // Contexts
     const { copy } = useContext(Utils);
-    const { coordsToRowCol, useDarkMode, color, selectedPixel, setSelectedPixel, numRows, pixelLimit, setColor, setWeiPrice, pixels, getNotMintedColor, notMintedPrice } = useContext(Data);
+    const {
+        coordsToRowCol,
+        useDarkMode,
+        color,
+        selectedPixel,
+        currSelectedPixel,
+        setSelectedPixel,
+        numRows,
+        pixelLimit,
+        setColor,
+        setEthPrice,
+        pixels,
+        getNotMintedColor,
+        notMintedPrice,
+        setMinting,
+        setBuying,
+        setColorPickerIsValid,
+        setEthPriceIsValid,
+    } = useContext(Data);
 
     // Get row and col
     const rowCol = typeof selectedPixel === "number" ? coordsToRowCol(selectedPixel) : { row: -1, col: -1 };
@@ -21,10 +40,10 @@ export default function Pixel({ pad }) {
     // On a directional pad arrow clicked
     const onDirectionalPadClick = (direction) => {
         var newSelectedPixel = -1;
-        if (direction === "up" && selectedPixel % numRows.current !== 0) newSelectedPixel = selectedPixel - 1;
-        else if (direction === "down" && selectedPixel % numRows.current !== numRows.current - 1) newSelectedPixel = selectedPixel + 1;
-        else if (direction === "left" && selectedPixel >= numRows.current) newSelectedPixel = selectedPixel - numRows.current;
-        else if (direction === "right" && selectedPixel < pixelLimit.current - numRows.current) newSelectedPixel = selectedPixel + numRows.current;
+        if (direction === "up" && currSelectedPixel.current % numRows.current !== 0) newSelectedPixel = currSelectedPixel.current - 1;
+        else if (direction === "down" && currSelectedPixel.current % numRows.current !== numRows.current - 1) newSelectedPixel = currSelectedPixel.current + 1;
+        else if (direction === "left" && currSelectedPixel.current >= numRows.current) newSelectedPixel = currSelectedPixel.current - numRows.current;
+        else if (direction === "right" && currSelectedPixel.current < pixelLimit.current - numRows.current) newSelectedPixel = currSelectedPixel.current + numRows.current;
 
         if (newSelectedPixel >= 0) {
             const pixelInfo = pixels.current[newSelectedPixel];
@@ -36,24 +55,31 @@ export default function Pixel({ pad }) {
             // Set color and price
             if (pixelInfo) {
                 setColor(pixelInfo.color);
-                setWeiPrice(pixelInfo.weiPrice);
+                setEthPrice(Web3.utils.fromWei(pixelInfo.weiPrice.toString(), "Ether").toString());
             } else {
                 setColor(getNotMintedColor(newRowCol.row, newRowCol.col));
-                setWeiPrice(notMintedPrice.current);
+                setEthPrice(notMintedPrice.current);
+                setMinting(false);
+                setBuying(false);
+                setColorPickerIsValid(true);
+                setEthPriceIsValid(true);
             }
         }
     };
 
     // On directional keys up
-    const onKeyUp = (event) => {
+    const onKeyDown = (event) => {
         // Return if there is no pixel selected
-        if (selectedPixel < 0) return;
+        if (currSelectedPixel.current < 0) return;
+
+        // Return if we are in an input element
+        if (event.target.tagName === "INPUT") return;
 
         // Move pixel
-        if (event.keyCode === "38") onDirectionalPadClick("up");
-        else if (event.keyCode === "40") onDirectionalPadClick("down");
-        else if (event.keyCode === "37") onDirectionalPadClick("left");
-        else if (event.keyCode === "39") onDirectionalPadClick("right");
+        if (event.code === "ArrowUp") onDirectionalPadClick("up");
+        else if (event.code === "ArrowDown") onDirectionalPadClick("down");
+        else if (event.code === "ArrowLeft") onDirectionalPadClick("left");
+        else if (event.code === "ArrowRight") onDirectionalPadClick("right");
     };
 
     // #################################################
@@ -63,11 +89,11 @@ export default function Pixel({ pad }) {
     // On component mount
     useEffect(() => {
         // Subscribe to events
-        window.addEventListener("keyup", onKeyUp);
+        window.addEventListener("keydown", onKeyDown);
 
         return () => {
             // Unsubscribe from events
-            window.removeEventListener("keyup", onKeyUp);
+            window.removeEventListener("keydown", onKeyDown);
         };
 
         // eslint-disable-next-line react-hooks/exhaustive-deps

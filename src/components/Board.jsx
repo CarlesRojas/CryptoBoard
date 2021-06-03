@@ -10,8 +10,24 @@ const PIXELS_PER_PIXEL = 20;
 
 export default function Board() {
     // Contexts
-    const { numRows, pixelLimit, mintedPixels, pixels, coordsToRowCol, rowColToCoords, useDarkMode, color, setColor, setSelectedPixel, currSelectedPixel, getNotMintedColor, setMinting, setBuying } =
-        useContext(Data);
+    const {
+        numRows,
+        pixelLimit,
+        mintedPixels,
+        pixels,
+        coordsToRowCol,
+        rowColToCoords,
+        useDarkMode,
+        color,
+        setColor,
+        setSelectedPixel,
+        currSelectedPixel,
+        getNotMintedColor,
+        setMinting,
+        setBuying,
+        setColorPickerIsValid,
+        setEthPriceIsValid,
+    } = useContext(Data);
 
     // #################################################
     //   CANVAS
@@ -62,16 +78,10 @@ export default function Board() {
         // ctxSelect.current.clearRect(0, 0, canvasWidth, canvasHeight);
 
         // If clicked on the same pixel again, diselect it
-        if (currSelectedPixel.current === newSelectedPixel) {
-            // Unset the selected pixel
-            currSelectedPixel.current = -1;
-            setSelectedPixel(-1);
-        }
-
+        if (currSelectedPixel.current === newSelectedPixel) setSelectedPixel(-1);
         // Select pixel
         else {
             // Set the selected pixel
-            currSelectedPixel.current = newSelectedPixel;
             setSelectedPixel(newSelectedPixel);
 
             // Set the color
@@ -82,6 +92,8 @@ export default function Board() {
         // Cancel minting or buying
         setMinting(false);
         setBuying(false);
+        setColorPickerIsValid(true);
+        setEthPriceIsValid(true);
     };
 
     // On mouse move over the canvas

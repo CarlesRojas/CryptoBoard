@@ -38,9 +38,9 @@ export default class EventsPubSub {
     {
         event:          changePixelColorAndPrice
         desciption:     Emited then the color of a pixel has been succesfully changed
-        parameters:     { pixelCoords, newColor, newWeiPrice }
+        parameters:     { pixelCoords, newColor, newEthPrice }
         pixelCoords:    Num -> Coords of the pixel
         newColor:       String -> Color code
-        newWeiPrice:    Num -> Price in wei
+        newEthPrice:    Num -> Price in wei
     },
 */
