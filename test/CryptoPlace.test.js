@@ -1,10 +1,12 @@
+const { assert } = require("chai");
+
 const CryptoPlace = artifacts.require("./CryptoPlace.sol");
 
 // Import Chai
 require("chai").use(require("chai-as-promised")).should();
 
 // Testing
-contract("CryptoPlace", ([deployer, buyer]) => {
+contract("CryptoPlace", ([deployer, user, buyer]) => {
     let contract;
 
     before(async () => {
@@ -34,7 +36,7 @@ contract("CryptoPlace", ([deployer, buyer]) => {
     describe("pixels", async () => {
         it("mints a new pixel", async () => {
             const result0 = await contract.mint(55, "#000000", web3.utils.toWei("5", "Ether"));
-            const result1 = await contract.mint(1454, "#FFFFFF", web3.utils.toWei("10", "Ether"), { from: buyer });
+            const result1 = await contract.mint(1454, "#FFFFFF", web3.utils.toWei("10", "Ether"), { from: user });
             const event0 = result0.logs[0].args;
             const event1 = result1.logs[0].args;
             const mintedPixels0 = await contract.mintedPixels(0);
@@ -56,11 +58,11 @@ contract("CryptoPlace", ([deployer, buyer]) => {
 
             assert.equal(event1.tokenId.toNumber(), 1454, "id 2 is correct");
             assert.equal(event1.from, "0x0000000000000000000000000000000000000000", "from 2 is correct");
-            assert.equal(event1.to, buyer, "to 2 is correct");
+            assert.equal(event1.to, user, "to 2 is correct");
             assert.equal(mintedPixels1.toNumber(), 1454, "mintedPixels 2 is correct");
             assert.equal(pixel1.coords.toNumber(), 1454, "pixel 1 coords are correct");
             assert.equal(pixel1.color, "#FFFFFF", "pixel 1 color is correct");
-            assert.equal(pixel1.owner, buyer, "pixel 1 owner is correct");
+            assert.equal(pixel1.owner, user, "pixel 1 owner is correct");
             assert.equal(pixel1.weiPrice, web3.utils.toWei("10", "Ether"), "pixel 1 price is correct");
             assert.equal(pixel1.exists, true, "pixel 1 exists is correct");
 
@@ -85,7 +87,7 @@ contract("CryptoPlace", ([deployer, buyer]) => {
             assert.equal(mintedPixels4, 4, "minted pixel 2 i correct");
 
             // FAILURE
-            await contract.mintBatch([57], ["#000000"], [1], { from: buyer }).should.be.rejected; // Only owner can execute this function
+            await contract.mintBatch([57], ["#000000"], [1], { from: user }).should.be.rejected; // Only owner can execute this function
             await contract.mintBatch([55], ["#000000"], [1]).should.be.rejected; // The coords are already minted
             await contract.mintBatch([3, 55], ["#000000", "#000000"], [1, 2]).should.be.rejected; // At least one of the coords are already minted
             await contract.mintBatch([123, 435], ["#000000"], [1, 2]).should.be.rejected; // Colors array size < coords array size
@@ -119,7 +121,7 @@ contract("CryptoPlace", ([deployer, buyer]) => {
             await contract.changeColorAndPrice(55, "#FFFFFF", web3.utils.toWei("20", "Ether")); // Change both color and wei price
             await contract.changeColorAndPrice(10, "#FFFFFF", 1); // Change only color
             await contract.changeColorAndPrice(5, "#000000", 5); // Change only  wei price
-            await contract.changeColorAndPrice(1454, "#000000", web3.utils.toWei("20", "Ether"), { from: buyer }); // Different account change
+            await contract.changeColorAndPrice(1454, "#000000", web3.utils.toWei("2", "Ether"), { from: user }); // Different account change
             const pixel0 = await contract.pixels(55);
             const pixel1 = await contract.pixels(10);
             const pixel2 = await contract.pixels(5);
@@ -146,16 +148,47 @@ contract("CryptoPlace", ([deployer, buyer]) => {
 
             assert.equal(pixel3.coords.toNumber(), 1454, "coords 3 are correct");
             assert.equal(pixel3.color, "#000000", "color 3 is correct");
-            assert.equal(pixel3.owner, buyer, "owner 3 is correct");
-            assert.equal(pixel3.weiPrice, web3.utils.toWei("20", "Ether"), "price 3 is correct");
+            assert.equal(pixel3.owner, user, "owner 3 is correct");
+            assert.equal(pixel3.weiPrice, web3.utils.toWei("2", "Ether"), "price 3 is correct");
             assert.equal(pixel3.exists, true, "exists 3 is correct");
 
             // FAILURE
             await contract.changeColorAndPrice(0, "#000000", 1).should.be.rejected; // Pixel has not been minted
-            await contract.changeColorAndPrice(55, "#000000", 1, { from: buyer }).should.be.rejected; // Not the owner of the pixel
+            await contract.changeColorAndPrice(55, "#000000", 1, { from: user }).should.be.rejected; // Not the owner of the pixel
             await contract.changeColorAndPrice(1454, "#FF00FF", 1).should.be.rejected; // Not the owner of the pixel
             await contract.changeColorAndPrice(55, "#GGGGGG", 1).should.be.rejected; // Invalid Color
             await contract.changeColorAndPrice(55, "#FFFFFF", web3.utils.toWei("20", "Ether")).should.be.rejected; // No changes
+        });
+
+        it("allows a user to buy another users pixels", async () => {
+            // Balances before transaction
+            const deployerBalanceBefore = await web3.eth.getBalance(deployer);
+            const userBalanceBefore = await web3.eth.getBalance(user);
+            const buyerBalanceBefore = await web3.eth.getBalance(buyer);
+
+            // Transaction
+            await contract.buyPixel(1454, "#EEEEEE", web3.utils.toWei("5", "Ether"), { from: buyer, value: web3.utils.toWei("2", "Ether") }); // Buyer buys pixel from user
+
+            // Get pixel and new owner
+            const pixel = await contract.pixels(1454);
+            const owner = await contract.ownerOf(1454);
+
+            // Balances after transaction
+            const deployerBalanceAfter = await web3.eth.getBalance(deployer);
+            const userBalanceAfter = await web3.eth.getBalance(user);
+            const buyerBalanceAfter = await web3.eth.getBalance(buyer);
+
+            // SUCCESS
+            assert.isTrue(deployerBalanceAfter > deployerBalanceBefore, "deployer has recieved the fee");
+            assert.isTrue(userBalanceAfter > userBalanceBefore, "seller has recieved the fee");
+            assert.isTrue(buyerBalanceAfter < buyerBalanceBefore, "price has been substracted from buyer");
+            assert.equal(pixel.owner, buyer, "pixel now belongs to buyer");
+            assert.equal(pixel.color, "#EEEEEE", "color has been changed");
+            assert.equal(pixel.weiPrice, web3.utils.toWei("5", "Ether"), "new price has been changed");
+            assert.equal(pixel.owner, buyer, "pixel now belongs to buyer");
+            assert.equal(owner, buyer, "pixel now belongs to buyer");
+
+            // FAILURE ROJAS
         });
     });
 

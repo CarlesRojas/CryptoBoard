@@ -19,7 +19,9 @@ contract CryptoPlace is ERC721, Ownable, Pausable {
     uint256 public constant PIXEL_LIMIT = NUM_ROWS * NUM_ROWS;
     uint256 public pixelCount;
     uint256[] public mintedPixels;
+    uint256 public transctionFee = 5;
     mapping(uint256 => Pixel) public pixels;
+    string private baseURI;
 
     // ##################################################################
     //    STRUCTS
@@ -60,7 +62,10 @@ contract CryptoPlace is ERC721, Ownable, Pausable {
         require(!pixels[_coords].exists, "Pixel has already been minted.");
 
         // Coords can not be bigger than the pixel limit
-        require(_coords < PIXEL_LIMIT, "Coordinate for the pixel is out of limits. 0 <= coordinate < 256 * 256");
+        require(
+            _coords < PIXEL_LIMIT,
+            "Coordinate for the pixel is out of limits. 0 <= coordinate < 256 * 256"
+        );
 
         // Only accept valid colors
         require(isColor(_color), "Invalid HEX color code. Ej: #FF0000");
@@ -96,10 +101,16 @@ contract CryptoPlace is ERC721, Ownable, Pausable {
         uint256[] memory _initialWeiPrices
     ) public onlyOwner {
         // The _coordsToMint array size has to match the _colors array size
-        require(_coordsToMint.length == _colors.length, "The colors array length does not match the coordinates array length.");
+        require(
+            _coordsToMint.length == _colors.length,
+            "The colors array length does not match the coordinates array length."
+        );
 
         // The _coordsToMint array size has to match the _initialWeiPrices array size
-        require(_coordsToMint.length == _initialWeiPrices.length, "The wei prices array length does not match the coordinates array length.");
+        require(
+            _coordsToMint.length == _initialWeiPrices.length,
+            "The wei prices array length does not match the coordinates array length."
+        );
 
         for (uint256 i = 0; i < _coordsToMint.length; i++) {
             mint(_coordsToMint[i], _colors[i], _initialWeiPrices[i]);
@@ -117,14 +128,20 @@ contract CryptoPlace is ERC721, Ownable, Pausable {
         string memory _color,
         uint256 _weiPrice
     ) public {
-        // Do not change color if it does not exists
-        require(pixels[_coords].exists, "Invalid coordinates. Out of limits or the pixel has not yet been minted.");
+        // Do not change color if it does not exist
+        require(
+            pixels[_coords].exists,
+            "Invalid coordinates. Out of limits or the pixel has not yet been minted."
+        );
 
         // Fetch the pixel
         Pixel memory _pixel = pixels[_coords];
 
         // Check that the owner is correct
-        require(_pixel.owner == msg.sender, "You are not the owner of this pixel.");
+        require(
+            _pixel.owner == msg.sender,
+            "You are not the owner of this pixel."
+        );
 
         // Only accept valid colors
         require(isColor(_color), "Invalid HEX color code. Ej: #FF0000");
@@ -132,7 +149,8 @@ contract CryptoPlace is ERC721, Ownable, Pausable {
         // Check that the color is different than the old one or the price is diferent from the old one
         require(
             !stringsAreEqual(_color, _pixel.color) ||
-                _weiPrice != _pixel.weiPrice, "The new color and price are the same as the current ones."
+                _weiPrice != _pixel.weiPrice,
+            "The new color and price are the same as the current ones."
         );
 
         // Change color & price
@@ -143,20 +161,88 @@ contract CryptoPlace is ERC721, Ownable, Pausable {
         pixels[_coords] = _pixel;
     }
 
+    /**
+        @notice Buy a pixel
+        @param _coords The coordinates of the pixel to buy: coordinates = column * number_of_rows + row
+        @param _color The new color the pixel will have after buying it
+        @param _weiPrice The new wei price the pixel will have after buying it
+    */
+    function buyPixel(
+        uint256 _coords,
+        string memory _color,
+        uint256 _weiPrice
+    ) public payable {
+        // Do buy if it does not exist
+        require(
+            pixels[_coords].exists,
+            "Invalid coordinates. Out of limits or the pixel has not yet been minted."
+        );
+
+        // Fetch the pixel
+        Pixel memory _pixel = pixels[_coords];
+
+        // Check that the owner is not the buyer
+        require(
+            _pixel.owner != msg.sender,
+            "You already are the owner of this pixel."
+        );
+
+        // Only accept valid colors
+        require(isColor(_color), "Invalid HEX color code. Ej: #FF0000");
+
+        // Price must be higher than the required selling price
+        require(
+            msg.value >= _pixel.weiPrice,
+            "Price is lower than selling price"
+        );
+
+        // Transfer fee to owner
+        if (transctionFee > 0)
+            payable(owner()).transfer((msg.value * transctionFee) / 100);
+
+        // Transfer rest of price to seller
+        _pixel.owner.transfer(msg.value - ((msg.value * transctionFee) / 100));
+
+        // Transfer pixel to buyer
+        _transfer(_pixel.owner, msg.sender, _coords);
+
+        // Change color & price
+        _pixel.color = _color;
+        _pixel.weiPrice = _weiPrice;
+        _pixel.owner = payable(msg.sender);
+
+        // Save pixel
+        pixels[_coords] = _pixel;
+    }
+
+    /**
+        @notice Set the new transaction fee for buying a pixel
+        @param _newTransactionFee The new base URI
+    */
+    function setTransctionFee(uint256 _newTransactionFee) public onlyOwner {
+        // Check that the Transaction Fee is different than the old one
+        require(
+            transctionFee != _newTransactionFee,
+            "The new transaction fee is the same as the current one."
+        );
+
+        transctionFee = _newTransactionFee;
+    }
+
     // ##################################################################
     //    ADD TOKEN URI
     // ##################################################################
-
-    // Base URI
-    string private baseURI;
 
     /**
         @notice Set the new base URI for all the pixels
         @param baseURI_ The new base URI
     */
     function setBaseURI(string memory baseURI_) public onlyOwner {
-        // Check that the color is different than the old one
-        require(!stringsAreEqual(baseURI, baseURI_), "The new base URI is the same as the current one,");
+        // Check that the BaseURI is different than the old one
+        require(
+            !stringsAreEqual(baseURI, baseURI_),
+            "The new base URI is the same as the current one."
+        );
 
         baseURI = baseURI_;
     }
