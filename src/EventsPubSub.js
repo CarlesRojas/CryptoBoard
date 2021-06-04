@@ -43,4 +43,10 @@ export default class EventsPubSub {
         newColor:       String -> Color code
         newEthPrice:    Num -> Price in wei
     },
+    {
+        event:          pixelHasBeenObtained
+        desciption:     Emited then a pixel has been bought
+        parameters:     { pixelCoords }
+        pixelCoords:    Num -> Coords of the bought pixel
+    },
 */

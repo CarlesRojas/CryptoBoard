@@ -12,6 +12,7 @@ import NotSelectedPixel from "components/NotSelectedPixel";
 import NotOwnedPixel from "components/NotOwnedPixel";
 import Minting from "components/Minting";
 import Buying from "components/Buying";
+import MyPixels from "components/MyPixels";
 import Board from "components/Board";
 
 export default function MainPage() {
@@ -55,6 +56,7 @@ export default function MainPage() {
         <div className="mainPage">
             <div className="sidebar">
                 <div className={classnames("section", { dark: useDarkMode })}>{currSidebarComponent}</div>
+                <div className={classnames("section", "second", { dark: useDarkMode })}>{<MyPixels />}</div>
             </div>
 
             <div className="boardContainer">

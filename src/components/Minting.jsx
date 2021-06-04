@@ -72,7 +72,10 @@ export default function Minting() {
             const pixelMinded = await mint(selectedPixel, color, ethPrice);
 
             // Inform about the color change
-            if (pixelMinded) window.PubSub.emit("changePixelColorAndPrice", { pixelCoords: selectedPixel, newColor: color, newEthPrice: ethPrice });
+            if (pixelMinded) {
+                window.PubSub.emit("changePixelColorAndPrice", { pixelCoords: selectedPixel, newColor: color, newEthPrice: ethPrice });
+                window.PubSub.emit("pixelHasBeenObtained", { pixelCoords: selectedPixel });
+            }
             // Show Error
             else {
                 setErrorMessage("Pixel was not minted");

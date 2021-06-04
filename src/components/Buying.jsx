@@ -73,7 +73,10 @@ export default function Buying() {
             const boughtPixel = await buyPixel(selectedPixel, color, ethPrice);
 
             // Inform about the color change
-            if (boughtPixel) window.PubSub.emit("changePixelColorAndPrice", { pixelCoords: selectedPixel, newColor: color, newEthPrice: ethPrice });
+            if (boughtPixel) {
+                window.PubSub.emit("changePixelColorAndPrice", { pixelCoords: selectedPixel, newColor: color, newEthPrice: ethPrice });
+                window.PubSub.emit("pixelHasBeenObtained", { pixelCoords: selectedPixel });
+            }
             // Show Error
             else {
                 setErrorMessage("Pixel purchase unsuccessful");

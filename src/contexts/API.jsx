@@ -282,6 +282,15 @@ const APIProvider = ({ children }) => {
             pixels.current[coords]["3"] = Web3.utils.toWei(newEthPrice.toString(), "Ether").toString();
             pixels.current[coords]["weiPrice"] = Web3.utils.toWei(newEthPrice.toString(), "Ether").toString();
 
+            // Set selected pixel
+            setSelectedPixel(coords);
+            setColor(newColor.toLowerCase());
+            setEthPrice(newEthPrice);
+            setMinting(false);
+            setBuying(false);
+            setColorPickerIsValid(true);
+            setEthPriceIsValid(true);
+
             return true;
         } catch (error) {
             console.log(error);

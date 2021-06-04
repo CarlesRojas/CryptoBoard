@@ -163,19 +163,8 @@ export default function Board() {
     //   RESIZE
     // #################################################
 
-    // Resize timeout
-    const resizeTimeout = useRef(null);
-
     // Current canvas size
     const currPixelWidth = useRef(0);
-
-    // On window resize
-    const onResize = (direct) => {
-        if (resizeTimeout.current) clearTimeout(resizeTimeout.current);
-
-        if (direct) resizeCanvases();
-        else resizeTimeout.current = setTimeout(resizeCanvases, 500);
-    };
 
     // Resize canvases
     const resizeCanvases = () => {
@@ -236,14 +225,14 @@ export default function Board() {
         const canvasRefEffect = canvasRef.current;
 
         // Subscribe to events
-        window.addEventListener("resize", onResize);
+        window.addEventListener("resize", resizeCanvases);
         canvasRefEffect.addEventListener("mousemove", onCanvasMouseMove);
         canvasRefEffect.addEventListener("mouseleave", onCanvasMouseLeave);
         canvasRefEffect.addEventListener("mouseup", onCanvasMouseUp);
         window.PubSub.sub("changePixelColorAndPrice", onChangePixelColorAndPrice);
 
         // Resize on load
-        onResize(true);
+        resizeCanvases();
 
         // Save 2D Contexts
         ctx.current = canvasRef.current.getContext("2d");
@@ -270,14 +259,11 @@ export default function Board() {
 
         return () => {
             // Unsubscribe from events
-            window.removeEventListener("resize", onResize);
+            window.removeEventListener("resize", resizeCanvases);
             canvasRefEffect.removeEventListener("mousemove", onCanvasMouseMove);
             canvasRefEffect.removeEventListener("mouseleave", onCanvasMouseLeave);
             canvasRefEffect.removeEventListener("mouseup", onCanvasMouseUp);
             window.PubSub.unsub("changePixelColorAndPrice", onChangePixelColorAndPrice);
-
-            // Clear timeouts
-            if (resizeTimeout.current) clearTimeout(resizeTimeout.current);
         };
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
