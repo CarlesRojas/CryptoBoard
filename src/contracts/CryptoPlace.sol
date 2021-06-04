@@ -172,7 +172,7 @@ contract CryptoPlace is ERC721, Ownable, Pausable {
         string memory _color,
         uint256 _weiPrice
     ) public payable {
-        // Do buy if it does not exist
+        // Do not buy if it does not exist
         require(
             pixels[_coords].exists,
             "Invalid coordinates. Out of limits or the pixel has not yet been minted."

@@ -119,7 +119,7 @@ contract("CryptoPlace", ([deployer, user, buyer]) => {
 
         it("allows owners to change the color and/or wei price of a pixel", async () => {
             await contract.changeColorAndPrice(55, "#FFFFFF", web3.utils.toWei("20", "Ether")); // Change both color and wei price
-            await contract.changeColorAndPrice(10, "#FFFFFF", 1); // Change only color
+            await contract.changeColorAndPrice(10, "#FFFFFF", web3.utils.toWei("10000", "Ether")); // Change only color
             await contract.changeColorAndPrice(5, "#000000", 5); // Change only  wei price
             await contract.changeColorAndPrice(1454, "#000000", web3.utils.toWei("2", "Ether"), { from: user }); // Different account change
             const pixel0 = await contract.pixels(55);
@@ -137,7 +137,7 @@ contract("CryptoPlace", ([deployer, user, buyer]) => {
             assert.equal(pixel1.coords.toNumber(), 10, "coords 1 are correct");
             assert.equal(pixel1.color, "#FFFFFF", "color 1 is correct");
             assert.equal(pixel1.owner, deployer, "owner 1 is correct");
-            assert.equal(pixel1.weiPrice, 1, "price 1 is correct");
+            assert.equal(pixel1.weiPrice, web3.utils.toWei("10000", "Ether"), "price 1 is correct");
             assert.equal(pixel1.exists, true, "exists 1 is correct");
 
             assert.equal(pixel2.coords.toNumber(), 5, "coords 2 are correct");
@@ -188,7 +188,22 @@ contract("CryptoPlace", ([deployer, user, buyer]) => {
             assert.equal(pixel.owner, buyer, "pixel now belongs to buyer");
             assert.equal(owner, buyer, "pixel now belongs to buyer");
 
-            // FAILURE ROJAS
+            // FAILURE
+            await contract.buyPixel(150, "#EEEEEE", web3.utils.toWei("5", "Ether"), { from: buyer, value: web3.utils.toWei("2", "Ether") }).should.be.rejected; // Unminted pixel
+            await contract.buyPixel(256 * 256, "#EEEEEE", web3.utils.toWei("5", "Ether"), { from: buyer, value: web3.utils.toWei("2", "Ether") }).should.be.rejected; // Pixel coords out of limits
+            await contract.buyPixel(1454, "#EEEEEE", web3.utils.toWei("5", "Ether"), { from: buyer, value: web3.utils.toWei("5", "Ether") }).should.be.rejected; // Owner is already the buyer
+            await contract.buyPixel(55, "#GGGGGG", web3.utils.toWei("30", "Ether"), { from: buyer, value: web3.utils.toWei("20", "Ether") }).should.be.rejected; // Invalid Color
+            await contract.buyPixel(55, "#EEEEEE", web3.utils.toWei("30", "Ether"), { from: buyer, value: web3.utils.toWei("19", "Ether") }).should.be.rejected; // Price is too low
+            await contract.buyPixel(10, "#EEEEEE", web3.utils.toWei("10", "Ether"), { from: buyer, value: web3.utils.toWei("10000", "Ether") }).should.be.rejected; // Buyer does not have the funds
+
+            // Test Transaction
+            await contract.buyPixel(55, "#333333", web3.utils.toWei("5", "Ether"), { from: buyer, value: web3.utils.toWei("20", "Ether") }); // Buyer buys pixel from user
+
+            // Balances after final transaction
+            const deployerBalanceFinal = await web3.eth.getBalance(deployer);
+
+            // SUCCESS
+            assert.isTrue(deployerBalanceFinal > deployerBalanceAfter, "deployer has recieved the fee");
         });
     });
 
