@@ -19,7 +19,7 @@ contract CryptoPlace is ERC721, Ownable, Pausable {
     uint256 public constant PIXEL_LIMIT = NUM_ROWS * NUM_ROWS;
     uint256 public pixelCount;
     uint256[] public mintedPixels;
-    uint256 public transctionFee = 5;
+    uint256 public transctionFee = 1;
     mapping(uint256 => Pixel) public pixels;
     string private baseURI;
 

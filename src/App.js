@@ -18,6 +18,11 @@ export default function App() {
     const { getCookie } = useContext(Utils);
     const { setDarkMode } = useContext(Data);
 
+    // Refresh page to reflect the account change
+    const refresh = () => {
+        window.location.reload();
+    };
+
     // #################################################
     //   COMPONENT MOUNT
     // #################################################
@@ -27,6 +32,10 @@ export default function App() {
         // Dark mode
         const useDarkModeCookie = getCookie("cryptoplace_dark_mode");
         setDarkMode(useDarkModeCookie && useDarkModeCookie !== "0");
+
+        // Subscribe to events
+        window.ethereum.on("accountsChanged", refresh);
+        window.ethereum.on("chainChanged", refresh);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
