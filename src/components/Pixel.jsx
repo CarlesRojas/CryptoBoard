@@ -28,7 +28,9 @@ export default function Pixel({ pad }) {
         pixels,
         getNotMintedColor,
         notMintedPrice,
+        minting,
         setMinting,
+        buying,
         setBuying,
         setColorPickerIsValid,
         setEthPriceIsValid,
@@ -74,8 +76,8 @@ export default function Pixel({ pad }) {
         // Return if there is no pixel selected
         if (currSelectedPixel.current < 0) return;
 
-        // Return if we are in an input element
-        if (event.target.tagName === "INPUT") return;
+        // Return if we are in an input element orminting or buying
+        if (event.target.tagName === "INPUT" || minting || buying) return;
 
         // Move pixel
         if (event.code === "ArrowUp") onDirectionalPadClick("up");

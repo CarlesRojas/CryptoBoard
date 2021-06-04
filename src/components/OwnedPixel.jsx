@@ -56,7 +56,7 @@ export default function OwnedPixel() {
     }, [errorMessage]);
 
     // #################################################
-    //   MINTING
+    //   CHANGING COLOR AND / OR PRICE
     // #################################################
 
     // Minting
@@ -134,6 +134,7 @@ export default function OwnedPixel() {
             <p className="account" data-tip="click to copy" onClick={() => copy(pixelInfo.owner)}>
                 {pixelInfo.owner}
             </p>
+            <div className="space"></div>
 
             <p className={classnames("message", { dark: useDarkMode })}>Change the pixel color.</p>
             <ColorPicker />

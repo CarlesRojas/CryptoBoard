@@ -15,12 +15,15 @@ export default function ColorPicker() {
     //   INPUTS
     // #################################################
 
+    // RGB initial value
+    const initialRGB = hexToRgb(color);
+
     // Input Values
-    const [colorPickerValue, setColorPickerValue] = useState("#ffffff");
-    const [hexValue, setHexValue] = useState("#ffffff");
-    const [redValue, setRedValue] = useState("255");
-    const [greenValue, setGreenValue] = useState("255");
-    const [blueValue, setBlueValue] = useState("255");
+    const [colorPickerValue, setColorPickerValue] = useState(color);
+    const [hexValue, setHexValue] = useState(color);
+    const [redValue, setRedValue] = useState(initialRGB.r);
+    const [greenValue, setGreenValue] = useState(initialRGB.g);
+    const [blueValue, setBlueValue] = useState(initialRGB.b);
 
     // Input refs
     const hexInputRef = useRef(null);

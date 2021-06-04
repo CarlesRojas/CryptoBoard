@@ -256,6 +256,39 @@ const APIProvider = ({ children }) => {
         }
     };
 
+    // Buy a pixel
+    const buyPixel = async (coords, newColor, newEthPrice) => {
+        // Return if the contract has not been loaded
+        if (!contract.current) return false;
+
+        // If we do not have the pixels get them
+        if (pixels.current.length <= 0) await getPixels();
+
+        // Return if not a correct coords, color or price
+        if (typeof coords !== "number" || (coords < 0 && coords >= pixelLimit.current)) return false;
+
+        // Get pixel info
+        const pixelInfo = pixels.current[coords];
+
+        try {
+            // Buy pixel
+            await contract.current.methods.buyPixel(coords, newColor, Web3.utils.toWei(newEthPrice.toString(), "Ether")).send({ from: account, value: pixelInfo.weiPrice });
+
+            // Update pixels
+            pixels.current[coords]["1"] = newColor.toLowerCase();
+            pixels.current[coords]["color"] = newColor.toLowerCase();
+            pixels.current[coords]["2"] = account;
+            pixels.current[coords]["owner"] = account;
+            pixels.current[coords]["3"] = Web3.utils.toWei(newEthPrice.toString(), "Ether").toString();
+            pixels.current[coords]["weiPrice"] = Web3.utils.toWei(newEthPrice.toString(), "Ether").toString();
+
+            return true;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    };
+
     // Return the context
     return (
         <API.Provider
@@ -268,6 +301,7 @@ const APIProvider = ({ children }) => {
                 getPixels,
                 mint,
                 changePixelColorAndPrice,
+                buyPixel,
             }}
         >
             {children}

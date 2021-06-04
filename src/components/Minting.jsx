@@ -47,7 +47,6 @@ export default function Minting() {
     // Remove error message after 2 seconds
     useEffect(() => {
         if (showErrorTimeout.current) clearTimeout(showErrorTimeout.current);
-
         if (errorMessage) showErrorTimeout.current = setTimeout(() => setErrorMessage(""), 2000);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
