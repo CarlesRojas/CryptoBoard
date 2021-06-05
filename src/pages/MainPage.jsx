@@ -1,4 +1,5 @@
-import React, { useContext, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
+import { isMobileOnly } from "react-device-detect";
 import { Redirect } from "react-router-dom";
 import classnames from "classnames";
 
@@ -52,7 +53,8 @@ export default function MainPage() {
     // Minting Pixel
     else currSidebarComponent = <Minting />;
 
-    return (
+    // Desktop
+    const contentDesktop = (
         <div className="mainPage">
             <div className="sidebar">
                 <div className={classnames("section", { dark: useDarkMode })}>{currSidebarComponent}</div>
@@ -64,6 +66,22 @@ export default function MainPage() {
             </div>
         </div>
     );
+
+    // Mobile
+    const contentMobile = (
+        <div className="mainPageMobile">
+            <div className="boardContainer">
+                <Board />
+            </div>
+
+            <div className="sidebar">
+                <div className={classnames("section", { dark: useDarkMode })}>{currSidebarComponent}</div>
+                <div className={classnames("section", "second", { dark: useDarkMode })}>{<MyPixels />}</div>
+            </div>
+        </div>
+    );
+
+    return <Fragment>{isMobileOnly ? contentMobile : contentDesktop}</Fragment>;
 }
 
 /* COORDINATE SYSTEM

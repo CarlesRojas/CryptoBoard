@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, Fragment } from "react";
 import classnames from "classnames";
 
 // Contexts
@@ -50,11 +50,11 @@ export default function MyPixels() {
 
     // Message if you still ahve no pixels
     const noPixelsMessage = ownerPixels.length ? null : (
-        <React.Fragment>
+        <Fragment>
             <p className={classnames("message", { dark: useDarkMode })}>You do not own any pixels just yet.</p>
             <p className={classnames("message", { dark: useDarkMode })}>Yo can buy one by clicking on it.</p>
             <div className="space"></div>
-        </React.Fragment>
+        </Fragment>
     );
 
     return (

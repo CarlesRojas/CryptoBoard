@@ -301,6 +301,68 @@ input[type="number"] {
 }
 
 // #######################################
+//      MAIN PAGE MOBILE
+// #######################################
+
+.mainPageMobile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - #{$navBarHeightMobile});
+    width: 100%;
+
+    .boardContainer {
+        position: relative;
+        display: flex;
+        flex-grow: 1;
+        align-items: center;
+        justify-content: center;
+        width: 100vw;
+        height: 100vw;
+        min-height: 100vw;
+        max-height: 100vw;
+    }
+
+    .sidebar {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 100vw;
+        flex-grow: 1;
+        overflow: auto;
+
+        .section {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: calc(100% - 1rem);
+            overflow: visible;
+            margin: 0.25rem 0.5rem 0.5rem 0.5rem;
+            padding: 0.5rem;
+            @include border-radius(8px);
+            @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
+
+            @media only screen and (min-width: $mobileWidth) {
+                width: calc(100% - 1.5rem);
+                margin: 1rem 0.5rem 1rem 1rem;
+            }
+
+            &.dark {
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+
+            &.second {
+                margin: 0 0 0.5rem 0.5rem;
+
+                @media only screen and (min-width: $mobileWidth) {
+                    margin: 0 0.5rem 1rem 1rem;
+                }
+            }
+        }
+    }
+}
+
+// #######################################
 //      ERROR PAGE
 // #######################################
 
@@ -811,7 +873,7 @@ input[type="number"] {
     max-width: calc(100% - 0.75rem);
     min-width: calc(100% - 0.75rem);
     overflow: visible;
-    margin: 0.5rem 0.5rem 0.5rem 0.25rem;
+    margin: 0.5rem;
 
     @media only screen and (min-width: $mobileWidth) {
         height: calc(100% - 2rem);

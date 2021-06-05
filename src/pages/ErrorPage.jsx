@@ -14,9 +14,7 @@ export default function ErrorPage() {
     const { errorType, useDarkMode, loadingDone } = useContext(Data);
 
     // Reload the page
-    console.log(loadingDone.current);
     const reloadPage = () => {
-        console.log("reload");
         window.location.reload();
     };
 
