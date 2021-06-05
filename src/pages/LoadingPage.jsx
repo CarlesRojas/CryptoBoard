@@ -5,6 +5,9 @@ import { Redirect } from "react-router-dom";
 import { API } from "contexts/API";
 import { Data } from "contexts/Data";
 
+// Icons
+import LoadingGif from "resources/icon/LoadingAnimation.gif";
+
 export default function LoadingPage() {
     // Contexts
     const { load, getNumRows, getPixelCount, getPixelLimit, getMintedPixels, getPixels } = useContext(API);
@@ -62,5 +65,9 @@ export default function LoadingPage() {
     //   RENDER
     // #################################################
 
-    return <div className="loadingPage"></div>;
+    return (
+        <div className="loadingPage">
+            <img src={LoadingGif} alt="" className="loadingGif" />
+        </div>
+    );
 }
