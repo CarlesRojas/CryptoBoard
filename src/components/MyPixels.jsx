@@ -13,16 +13,25 @@ export default function MyPixels() {
 
     const [ownerPixels, setOwnerPixels] = useState([]);
 
+    // Sort function
+    var customSort = function (a, b) {
+        return a - b;
+    };
+
     // Get all the pixels from the owner
     const getOwnerPixels = () => {
         var newOwnerPixels = [];
         for (const mintedPixel of mintedPixels.current) if (pixels.current[mintedPixel].owner === account) newOwnerPixels.push(mintedPixel);
+        newOwnerPixels = newOwnerPixels.sort(customSort);
         setOwnerPixels(newOwnerPixels);
     };
 
     // When a pixel has been obtained, add it to the list
     const onPixelHasBeenObtained = ({ pixelCoords }) => {
-        setOwnerPixels((oldState) => [...oldState, pixelCoords]);
+        setOwnerPixels((oldState) => {
+            var newOwnerPixels = [...oldState, pixelCoords];
+            return newOwnerPixels.sort(customSort);
+        });
     };
 
     // #################################################
@@ -52,7 +61,7 @@ export default function MyPixels() {
     const noPixelsMessage = ownerPixels.length ? null : (
         <Fragment>
             <p className={classnames("message", { dark: useDarkMode })}>You do not own any pixels just yet.</p>
-            <p className={classnames("message", { dark: useDarkMode })}>Yo can buy one by clicking on it.</p>
+            <p className={classnames("message", { dark: useDarkMode })}>Yo can mint or buy one by clicking on it.</p>
             <div className="space"></div>
         </Fragment>
     );

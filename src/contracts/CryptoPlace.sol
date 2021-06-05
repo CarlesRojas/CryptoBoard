@@ -1,43 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
+import "./ERC721.sol";
 
 /**
     @title An image where each pixel is an NFT
     @author Carles Rojas
     @notice You can use this contract to change the color of your pixels, trade them or mint new ones (Up to a limit).
 */
-contract CryptoPlace is ERC721, Ownable, Pausable {
-    // ##################################################################
-    //    GLOBAR VARS
-    // ##################################################################
-
-    uint256 public constant NUM_ROWS = 256;
-    uint256 public constant PIXEL_LIMIT = NUM_ROWS * NUM_ROWS;
-    uint256 public pixelCount;
-    uint256[] public mintedPixels;
-    uint256 public transctionFee = 1;
-    mapping(uint256 => Pixel) public pixels;
-    string private baseURI;
-
-    // ##################################################################
-    //    STRUCTS
-    // ##################################################################
-
-    /**
-        @notice Represents a pixel. With coordinates, color, owner, wei price and whether it has been minted
-    */
-    struct Pixel {
-        uint256 coords;
-        string color;
-        address payable owner;
-        uint256 weiPrice;
-        bool exists;
-    }
-
+contract CryptoPlace is ERC721 {
     // ##################################################################
     //    MAIN FUNCTIONS
     // ##################################################################
@@ -58,9 +29,6 @@ contract CryptoPlace is ERC721, Ownable, Pausable {
         string memory _color,
         uint256 _initialWeiPrice
     ) public {
-        // Do not create if coordinate already exists
-        require(!pixels[_coords].exists, "Pixel has already been minted.");
-
         // Coords can not be bigger than the pixel limit
         require(
             _coords < PIXEL_LIMIT,
@@ -70,22 +38,15 @@ contract CryptoPlace is ERC721, Ownable, Pausable {
         // Only accept valid colors
         require(isColor(_color), "Invalid HEX color code. Ej: #FF0000");
 
-        // Increment the pixel count
-        pixelCount++;
-
         // Mint pixel
         _mint(msg.sender, _coords);
 
-        // Add to minted pixels array
-        mintedPixels.push(_coords);
-
-        // Save the pixel
+        // Add color and price to the the pixel
         pixels[_coords] = Pixel(
             _coords,
             _color,
             payable(msg.sender),
-            _initialWeiPrice,
-            true
+            _initialWeiPrice
         );
     }
 
@@ -130,8 +91,8 @@ contract CryptoPlace is ERC721, Ownable, Pausable {
     ) public {
         // Do not change color if it does not exist
         require(
-            pixels[_coords].exists,
-            "Invalid coordinates. Out of limits or the pixel has not yet been minted."
+            _exists(_coords),
+            "Invalid coordinates or the pixel has not yet been minted."
         );
 
         // Fetch the pixel
@@ -139,7 +100,7 @@ contract CryptoPlace is ERC721, Ownable, Pausable {
 
         // Check that the owner is correct
         require(
-            _pixel.owner == msg.sender,
+            ownerOf(_coords) == msg.sender,
             "You are not the owner of this pixel."
         );
 
@@ -174,8 +135,8 @@ contract CryptoPlace is ERC721, Ownable, Pausable {
     ) public payable {
         // Do not buy if it does not exist
         require(
-            pixels[_coords].exists,
-            "Invalid coordinates. Out of limits or the pixel has not yet been minted."
+            _exists(_coords),
+            "Invalid coordinates or the pixel has not yet been minted."
         );
 
         // Fetch the pixel
@@ -183,7 +144,7 @@ contract CryptoPlace is ERC721, Ownable, Pausable {
 
         // Check that the owner is not the buyer
         require(
-            _pixel.owner != msg.sender,
+            ownerOf(_coords) != msg.sender,
             "You already are the owner of this pixel."
         );
 
@@ -201,10 +162,12 @@ contract CryptoPlace is ERC721, Ownable, Pausable {
             payable(owner()).transfer((msg.value * transctionFee) / 100);
 
         // Transfer rest of price to seller
-        _pixel.owner.transfer(msg.value - ((msg.value * transctionFee) / 100));
+        payable(ownerOf(_coords)).transfer(
+            msg.value - ((msg.value * transctionFee) / 100)
+        );
 
         // Transfer pixel to buyer
-        _transfer(_pixel.owner, msg.sender, _coords);
+        _transfer(ownerOf(_coords), msg.sender, _coords);
 
         // Change color & price
         _pixel.color = _color;
@@ -227,81 +190,5 @@ contract CryptoPlace is ERC721, Ownable, Pausable {
         );
 
         transctionFee = _newTransactionFee;
-    }
-
-    // ##################################################################
-    //    ADD TOKEN URI
-    // ##################################################################
-
-    /**
-        @notice Set the new base URI for all the pixels
-        @param baseURI_ The new base URI
-    */
-    function setBaseURI(string memory baseURI_) public onlyOwner {
-        // Check that the BaseURI is different than the old one
-        require(
-            !stringsAreEqual(baseURI, baseURI_),
-            "The new base URI is the same as the current one."
-        );
-
-        baseURI = baseURI_;
-    }
-
-    /**
-        @notice Get the base URI for the pixels
-        @return Returns the base URI for the pixels
-    */
-    function _baseURI() internal view virtual override returns (string memory) {
-        return baseURI;
-    }
-
-    // ##################################################################
-    //    AUX FUNCTIONS
-    // ##################################################################
-
-    /**
-        @notice Checks if two strings are equal
-        @param _s1 The first string to compare
-        @param _s2 The second string to compare
-        @return True if the strings are equal
-    */
-    function stringsAreEqual(string memory _s1, string memory _s2)
-        public
-        pure
-        returns (bool)
-    {
-        return
-            keccak256(abi.encodePacked(_s1)) ==
-            keccak256(abi.encodePacked(_s2));
-    }
-
-    /**
-        @notice Checks if a color is a valid HEX color code
-        @param _color The HEX color code to check
-        @return True if the string is a valid HEX color code
-    */
-    function isColor(string memory _color) public pure returns (bool) {
-        // String to bytes
-        bytes memory b = bytes(_color);
-
-        // Not correct length
-        if (b.length != 7) return false;
-
-        // First charater must be '#'
-        if (b[0] != 0x23) return false;
-
-        // Other characters have to be 1-9 or A-F or a-f
-        for (uint256 i = 1; i < b.length; i++) {
-            bytes1 char = b[i];
-
-            if (
-                !(char >= 0x30 && char <= 0x39) && // 0-9
-                !(char >= 0x41 && char <= 0x46) && // A-F
-                !(char >= 0x61 && char <= 0x66) // a-f
-            ) return false;
-        }
-
-        // String is a color hex value
-        return true;
     }
 }

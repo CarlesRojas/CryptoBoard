@@ -201,12 +201,10 @@ const APIProvider = ({ children }) => {
                 1: color,
                 2: account,
                 3: Web3.utils.toWei(ethPrice.toString(), "Ether").toString(),
-                4: true,
                 coords: coords.toString(),
                 color: color,
                 owner: account,
                 weiPrice: Web3.utils.toWei(ethPrice.toString(), "Ether").toString(),
-                exists: true,
             };
 
             // Update pixel count

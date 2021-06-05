@@ -54,7 +54,6 @@ contract("CryptoPlace", ([deployer, user, buyer]) => {
             assert.equal(pixel0.color, "#000000", "pixel 0 color is correct");
             assert.equal(pixel0.owner, deployer, "pixel 0 owner is correct");
             assert.equal(pixel0.weiPrice, web3.utils.toWei("5", "Ether"), "pixel 0 price is correct");
-            assert.equal(pixel0.exists, true, "pixel 0 exists is correct");
 
             assert.equal(event1.tokenId.toNumber(), 1454, "id 2 is correct");
             assert.equal(event1.from, "0x0000000000000000000000000000000000000000", "from 2 is correct");
@@ -64,7 +63,6 @@ contract("CryptoPlace", ([deployer, user, buyer]) => {
             assert.equal(pixel1.color, "#FFFFFF", "pixel 1 color is correct");
             assert.equal(pixel1.owner, user, "pixel 1 owner is correct");
             assert.equal(pixel1.weiPrice, web3.utils.toWei("10", "Ether"), "pixel 1 price is correct");
-            assert.equal(pixel1.exists, true, "pixel 1 exists is correct");
 
             // FAILURE
             await contract.mint(-1, "#000000", 1).should.be.rejected; // Coords < 0
@@ -108,13 +106,11 @@ contract("CryptoPlace", ([deployer, user, buyer]) => {
             assert.equal(firstPixel.color, "#000000", "first pixel color is correct");
             assert.equal(firstPixel.owner, deployer, "first pixel owner is correct");
             assert.equal(firstPixel.weiPrice, web3.utils.toWei("5", "Ether"), "first pixel price is correct");
-            assert.equal(firstPixel.exists, true, "first pixel exists is correct");
 
             assert.equal(lastPixel.coords.toNumber(), 4, "last pixel coords are correct");
             assert.equal(lastPixel.color, "#00FF00", "last pixel color is correct");
             assert.equal(lastPixel.owner, deployer, "last pixel owner is correct");
             assert.equal(lastPixel.weiPrice, 3, "last pixel price is correct");
-            assert.equal(lastPixel.exists, true, "last pixel exists is correct");
         });
 
         it("allows owners to change the color and/or wei price of a pixel", async () => {
@@ -132,25 +128,21 @@ contract("CryptoPlace", ([deployer, user, buyer]) => {
             assert.equal(pixel0.color, "#FFFFFF", "color 0 is correct");
             assert.equal(pixel0.owner, deployer, "owner 0 is correct");
             assert.equal(pixel0.weiPrice, web3.utils.toWei("20", "Ether"), "price 0 is correct");
-            assert.equal(pixel0.exists, true, "exists 0 is correct");
 
             assert.equal(pixel1.coords.toNumber(), 10, "coords 1 are correct");
             assert.equal(pixel1.color, "#FFFFFF", "color 1 is correct");
             assert.equal(pixel1.owner, deployer, "owner 1 is correct");
             assert.equal(pixel1.weiPrice, web3.utils.toWei("10000", "Ether"), "price 1 is correct");
-            assert.equal(pixel1.exists, true, "exists 1 is correct");
 
             assert.equal(pixel2.coords.toNumber(), 5, "coords 2 are correct");
             assert.equal(pixel2.color, "#000000", "color 2 is correct");
             assert.equal(pixel2.owner, deployer, "owner 2 is correct");
             assert.equal(pixel2.weiPrice, 5, "price 2 is correct");
-            assert.equal(pixel2.exists, true, "exists 2 is correct");
 
             assert.equal(pixel3.coords.toNumber(), 1454, "coords 3 are correct");
             assert.equal(pixel3.color, "#000000", "color 3 is correct");
             assert.equal(pixel3.owner, user, "owner 3 is correct");
             assert.equal(pixel3.weiPrice, web3.utils.toWei("2", "Ether"), "price 3 is correct");
-            assert.equal(pixel3.exists, true, "exists 3 is correct");
 
             // FAILURE
             await contract.changeColorAndPrice(0, "#000000", 1).should.be.rejected; // Pixel has not been minted
