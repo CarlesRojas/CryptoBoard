@@ -33150,15 +33150,21 @@
     "version": "0.8.4+commit.c7e474f2.Emscripten.clang"
   },
   "networks": {
+    "3": {
+      "events": {},
+      "links": {},
+      "address": "0x6C027236fE39013f9495d55F1cC95f40224240fD",
+      "transactionHash": "0x58f27f7a7e888593e32286e4a237caa7ff11348ed7ceb22fd644baa788973094"
+    },
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xc7Ed1440369962Bd1c6B841ccf1112c50006eeb2",
-      "transactionHash": "0xc8d6b2b93ef95d0b0115fb3f288a65eda3b69b2bc82f25004ce44b5c7a267e37"
+      "address": "0xf1B315bc5a2Db1944A511B02EC0d88657f639aB7",
+      "transactionHash": "0x314dd6ccce1e7f99e8d6d574174ec6a200e2151d79cd46c9975b9b55538c7c78"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-06-05T10:09:05.815Z",
+  "updatedAt": "2021-06-16T16:12:12.849Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Carles Rojas",

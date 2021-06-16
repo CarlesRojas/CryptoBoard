@@ -37,8 +37,7 @@ export default function ErrorPage() {
 
     // Error Title
     if (errorType.current === "no-eth-accounts") var title = "No account detected";
-    else if (errorType.current === "contract-not-deployed") title = "This app is not yet available.";
-    //"Contract not deployed to this network";
+    else if (errorType.current === "contract-not-deployed") title = "Contract not deployed to this network.";
     else if (errorType.current === "non-eth-browser") title = "No Ethereum Provider detected in the browser";
     else if (errorType.current === "user-reject") title = "You have rejected the connection with your Ethereum Provider";
     else if (errorType.current === "request-pending") title = "You have not accepted the connection request";
@@ -46,7 +45,8 @@ export default function ErrorPage() {
 
     // Error subtitle
     if (errorType.current === "no-eth-accounts") var subtitle = "Make sure to add your account to your Ethereum Provider (E.g. Metamask).";
-    else if (errorType.current === "contract-not-deployed") subtitle = "CryptoPlace is Coming soon to the Ethereum Network. Stay tuned!";
+    else if (errorType.current === "contract-not-deployed")
+        subtitle = "CryptoPlace is Coming soon to the Ethereum Main Network. In the meantime, try it in the Ropsten network by changing it in your Ethereum Provider (E.g. Metamask).  Stay tuned!";
     //"You are not in a network where this contract is deployed. Try changing it in your Ethereum Provider (E.g. Metamask).";
     else if (errorType.current === "non-eth-browser") subtitle = "Connecting to one is essential to run this page. We recommend installing MetaMask.";
     else if (errorType.current === "user-reject") subtitle = "Reload to show the connection request again.";

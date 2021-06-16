@@ -4,20 +4,30 @@
 
 `truffle complie`
 
-### Make migrations
+### Make migrations to Ganache
 
 `truffle migrate`
+
+### Deploy to Ropsten or MainNet
+
+`truffle migrate --reset --network ropsten`
+`truffle migrate --reset --network mainnet`
+
+### Check in which networks the contract is deployed
+
+`truffle networks`
 
 ### Compile and test smart contracts
 
 `truffle test`
 
-### Deploy contract
+#### Get Info
 
 `truffle console`
-`contract = await CryptoPlace.deployed()`
+`truffle console --network ropsten`
+`truffle console --network mainnet`
 
-#### Get Info
+`contract = await CryptoPlace.deployed()`
 
 `numRows = await contract.NUM_ROWS()`
 `numRows.toNumber()`
@@ -30,7 +40,7 @@
 
 #### Mint
 
-`await contract.mintBatch([12, 234, 6789], ["#FF0000", "#00FF00", "#0000FF"])`
+`await contract.mintBatch([0, 255, 65025, 65280], ["#ededed", "#e5e5e5","#e5e5e5", "#ededed"], ["10000000000000000000", "10000000000000000000", "10000000000000000000", "10000000000000000000"])`
 
 #### Change Color
 
