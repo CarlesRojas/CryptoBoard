@@ -1,12 +1,16 @@
 require("dotenv").config();
 var HDWalletProvider = require("truffle-hdwallet-provider");
 
+const Web3 = require("web3");
+const web3 = new Web3();
+
 module.exports = {
     networks: {
         development: {
             host: "127.0.0.1",
             port: 7545,
             network_id: "*", // Match any network id
+            gasPrice: web3.utils.toWei("5", "gwei"),
         },
         ropsten: {
             provider: function () {
@@ -20,8 +24,8 @@ module.exports = {
                 return new HDWalletProvider(process.env.MNEMONIC, `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`);
             },
             network_id: 1,
-            gas: 4000000,
-            confirmations: 2,
+            gas: 14000000,
+            gasPrice: web3.utils.toWei("5", "gwei"),
         },
     },
 
